@@ -1,6 +1,8 @@
 import fswalk
 import gleam/iterator
 import gleam/string
+import simplifile
+import gleam/list
 
 pub fn files_list(path) {
   fswalk.builder()
@@ -18,4 +20,9 @@ pub fn files_list(path) {
     path
   })
   |> iterator.to_list()
+}
+
+pub fn files_content(files_paths) {
+  use path <- list.map(files_paths)
+  simplifile.read(path)
 }
