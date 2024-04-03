@@ -52,16 +52,20 @@ pub fn pub_fn_used(fun_name, ast) {
     use module <- list.flat_map(ast)
     let assert glance.Module(_, _, _, _, _, _, fns) = module
     use fun_def <- list.flat_map(fns)
-    let assert glance.Definition(_, glance.Function(_, _, _, _, body, _)) =
+    let assert glance.Definition(_, glance.Function(_, _, _, _, statements, _)) =
       fun_def
-    use statement <- list.flat_map(body)
-    check_fun_name_usage(statement, fun_name)
+    check_fun_name_usage(statements, fun_name)
   }
   is_used_somewhere
   |> list.any(fn(is) { is })
 }
 
-fn check_fun_name_usage(statement, fun_name) {
+fn check_fun_name_usage(statements, fun_name) {
+  use statement <- list.flat_map(statements)
+  check_fun_name_usage_in_statement(statement, fun_name)
+}
+
+fn check_fun_name_usage_in_statement(statement, fun_name) {
   case statement {
     glance.Expression(glance.Call(glance.Variable(var_name), _))
       if var_name == fun_name
@@ -70,15 +74,13 @@ fn check_fun_name_usage(statement, fun_name) {
       use param <- list.flat_map(params)
       case param {
         glance.Field(_, glance.Fn(_, _, statements)) -> {
-          use statement <- list.flat_map(statements)
-          check_fun_name_usage(statement, fun_name)
+          check_fun_name_usage(statements, fun_name)
         }
         _ -> [False]
       }
     }
     glance.Expression(glance.Block(statements)) -> {
-      use statement <- list.flat_map(statements)
-      check_fun_name_usage(statement, fun_name)
+      check_fun_name_usage(statements, fun_name)
     }
     _ -> [False]
   }
