@@ -8,10 +8,12 @@ pub fn main() {
   gleeunit.main()
 }
 
-const file_paths = ["src/cleam.gleam", "src/internal/internal.gleam"]
+const file_paths = [
+  "test/fixtures/dependency.gleam", "test/fixtures/file.gleam",
+]
 
 pub fn files_list_test() {
-  cleam.files_list("src")
+  cleam.files_list("test/fixtures")
   |> should.equal(file_paths)
 }
 
@@ -25,5 +27,5 @@ pub fn public_functions_test() {
   cleam.files_content(file_paths)
   |> cleam.files_ast
   |> cleam.pub_fns
-  |> should.equal(["pub_fns", "files_ast", "files_content", "files_list"])
+  |> should.equal(["fun_orphan", "dep_fun"])
 }
