@@ -14,6 +14,7 @@ const file_paths = [
 
 pub fn files_list_test() {
   cleam.files_list("test/fixtures")
+  |> list.sort(fn(a, b) { string.compare(a, b) })
   |> should.equal(file_paths)
 }
 
