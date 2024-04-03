@@ -17,9 +17,13 @@ pub fn files_list_test() {
 
 pub fn files_content_test() {
   cleam.files_content(file_paths)
-  |> list.map(fn(content_result) {
-    let assert Ok(content) = content_result
-    string.starts_with(content, "import")
-  })
+  |> list.map(fn(content) { string.starts_with(content, "import") })
   |> should.equal([True, True])
+}
+
+pub fn public_functions_test() {
+  cleam.files_content(file_paths)
+  |> cleam.files_ast
+  |> cleam.pub_fns
+  |> should.equal(["pub_fns", "files_ast", "files_content", "files_list"])
 }
