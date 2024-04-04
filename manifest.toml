@@ -2,7 +2,7 @@
 # You typically do not need to edit this file
 
 packages = [
-  { name = "dot_env", version = "0.3.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "simplifile"], otp_app = "dot_env", source = "hex", outer_checksum = "FA7DC31F86FD2F64AEBD4868F3F357F93E1147946F5631CBAEBA29EAC0A2BBB3" },
+  { name = "dot_env", version = "0.4.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "simplifile"], otp_app = "dot_env", source = "hex", outer_checksum = "F5D2C1D45CDA4D7CCF3AA60761396866C034089B74850AA0BD2F93F6848AA267" },
   { name = "filepath", version = "1.0.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "filepath", source = "hex", outer_checksum = "EFB6FF65C98B2A16378ABC3EE2B14124168C0CE5201553DE652E2644DCFDB594" },
   { name = "fswalk", version = "2.0.2", build_tools = ["gleam"], requirements = ["dot_env", "gleam_community_path", "gleam_stdlib", "simplifile"], otp_app = "fswalk", source = "hex", outer_checksum = "5D8E9C34C4C1BF3E65A79A292FE98B4AD35E525D18BB068518359687FA7BD1EB" },
   { name = "glance", version = "0.8.2", build_tools = ["gleam"], requirements = ["gleam_stdlib", "glexer"], otp_app = "glance", source = "hex", outer_checksum = "ACF09457E8B564AD7A0D823DAFDD326F58263C01ACB0D432A9BEFDEDD1DA8E73" },
