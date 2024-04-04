@@ -4,9 +4,26 @@ import gleam/string
 import simplifile
 import gleam/list
 
-pub fn files_list(path) {
+pub type FilePath {
+  FilePath(String)
+}
+
+pub type FileContent {
+  FileContent(String)
+}
+
+pub type FilesDir {
+  FilesDir(String)
+}
+
+pub type ModuleName {
+  ModuleName(String)
+}
+
+pub fn files_paths(dir) {
+  let assert FilesDir(dir) = dir
   fswalk.builder()
-  |> fswalk.with_path(path)
+  |> fswalk.with_path(dir)
   |> fswalk.walk()
   |> iterator.filter(fn(entry_result) {
     case entry_result {
@@ -17,13 +34,23 @@ pub fn files_list(path) {
   })
   |> iterator.map(fn(entry_result) {
     let assert Ok(Entry(path, _)) = entry_result
-    path
+    FilePath(path)
   })
   |> iterator.to_list()
 }
 
-pub fn files_content(files_paths) {
+pub fn files_contents(files_paths) {
   use path <- list.map(files_paths)
+  let assert FilePath(path) = path
   let assert Ok(content) = simplifile.read(path)
-  content
+  FileContent(content)
+}
+
+pub fn file_path_to_module_name(files_dir, file_path) {
+  let assert FilePath(file_path) = file_path
+  let assert FilesDir(files_dir) = files_dir
+  file_path
+  |> string.replace(".gleam", "")
+  |> string.replace(files_dir <> "/", "")
+  |> ModuleName
 }
