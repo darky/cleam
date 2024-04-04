@@ -29,49 +29,57 @@ pub fn public_functions_test() {
   |> cleam.files_ast
   |> cleam.pub_fns
   |> should.equal([
-    "fun_orphan", "dep_fun_inside_clojure", "dep_fun_inside_use",
-    "dep_fun_nested_inside_block", "dep_fun_inside_block", "dep_fun",
+    "fun_orphan", "dep_fun_imported_as_alias", "dep_fun_inside_clojure",
+    "dep_fun_inside_use", "dep_fun_nested_inside_block", "dep_fun_inside_block",
+    "dep_fun",
   ])
 }
 
 pub fn public_function_used_test() {
   cleam.files_content(file_paths)
   |> cleam.files_ast
-  |> cleam.pub_fn_used("dep_fun", _)
+  |> cleam.pub_fn_used("dep_fun", "fixtures/dependency")
   |> should.equal(True)
 }
 
 pub fn public_function_not_used_test() {
   cleam.files_content(file_paths)
   |> cleam.files_ast
-  |> cleam.pub_fn_used("fun_orphan", _)
+  |> cleam.pub_fn_used("fun_orphan", "fixtures/dependency")
   |> should.equal(False)
 }
 
 pub fn public_function_used_inside_block_test() {
   cleam.files_content(file_paths)
   |> cleam.files_ast
-  |> cleam.pub_fn_used("dep_fun_inside_block", _)
+  |> cleam.pub_fn_used("dep_fun_inside_block", "fixtures/dependency")
   |> should.equal(True)
 }
 
 pub fn public_function_used_inside_nested_block_test() {
   cleam.files_content(file_paths)
   |> cleam.files_ast
-  |> cleam.pub_fn_used("dep_fun_nested_inside_block", _)
+  |> cleam.pub_fn_used("dep_fun_nested_inside_block", "fixtures/dependency")
   |> should.equal(True)
 }
 
 pub fn public_function_used_inside_use_test() {
   cleam.files_content(file_paths)
   |> cleam.files_ast
-  |> cleam.pub_fn_used("dep_fun_inside_use", _)
+  |> cleam.pub_fn_used("dep_fun_inside_use", "fixtures/dependency")
   |> should.equal(True)
 }
 
 pub fn public_function_used_inside_clojure_test() {
   cleam.files_content(file_paths)
   |> cleam.files_ast
-  |> cleam.pub_fn_used("dep_fun_inside_clojure", _)
+  |> cleam.pub_fn_used("dep_fun_inside_clojure", "fixtures/dependency")
+  |> should.equal(True)
+}
+
+pub fn public_function_imported_as_alias_test() {
+  cleam.files_content(file_paths)
+  |> cleam.files_ast
+  |> cleam.pub_fn_used("dep_fun_imported_as_alias", "fixtures/dependency")
   |> should.equal(True)
 }

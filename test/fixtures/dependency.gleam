@@ -20,6 +20,10 @@ pub fn dep_fun_inside_clojure() {
   int.to_string(123)
 }
 
+pub fn dep_fun_imported_as_alias() {
+  int.to_string(123)
+}
+
 pub fn fun_orphan() {
   123
 }
