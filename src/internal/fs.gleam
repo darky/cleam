@@ -47,10 +47,10 @@ pub fn files_contents(files_paths) {
 }
 
 pub fn file_path_to_module_name(files_dir, file_path) {
-  let assert FilePath(file_path) = file_path
   let assert FilesDir(files_dir) = files_dir
+  let assert FilePath(file_path) = file_path
   file_path
-  |> string.replace(".gleam", "")
   |> string.replace(files_dir <> "/", "")
+  |> string.replace(".gleam", "")
   |> ModuleName
 }

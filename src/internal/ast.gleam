@@ -1,15 +1,15 @@
 import gleam/string
 import gleam/list
 import glance.{
-  type Module, Block, Call, Definition, Expression, Field, FieldAccess, Fn,
-  Function, Import, Module, Public, UnqualifiedImport, Variable,
+  type Module as AST, Block, Call, Definition, Expression, Field, FieldAccess,
+  Fn, Function, Import, Module as AST, Public, UnqualifiedImport, Variable,
 }
-import internal/fs.{FileContent}
+import internal/fs.{FileContent, ModuleName}
 
 const main_fun_name = "main"
 
 pub type FileAst {
-  FileAst(Module)
+  FileAst(AST)
 }
 
 pub type PublicFun {
@@ -19,30 +19,31 @@ pub type PublicFun {
 pub fn files_ast(files_contents) {
   use content <- list.map(files_contents)
   let assert FileContent(content) = content
-  let assert Ok(module) = glance.module(content)
-  FileAst(module)
+  let assert Ok(ast) = glance.module(content)
+  FileAst(ast)
 }
 
-pub fn pub_fns(ast) {
-  use module <- list.flat_map(ast)
-  let assert FileAst(module) = module
-  let assert Module(_, _, _, _, _, _, fns) = module
-  use fun_def <- list.flat_map(fns)
-  let assert Definition(_, Function(name, public, _, _, _, _)) = fun_def
-  case public {
-    Public if name != main_fun_name -> [PublicFun(name)]
+pub fn public_funs(files_ast) {
+  use file_ast <- list.flat_map(files_ast)
+  let assert FileAst(ast) = file_ast
+  let assert AST(_, _, _, _, _, _, funs) = ast
+  use fun_def <- list.flat_map(funs)
+  let assert Definition(_, Function(fun_name, is_public, _, _, _, _)) = fun_def
+  case is_public {
+    Public if fun_name != main_fun_name -> [PublicFun(fun_name)]
     _ -> []
   }
 }
 
-pub fn is_pub_fn_used(ast, fun_name, module_name) {
+pub fn is_pub_fun_used(ast, fun_name, module_name) {
+  let assert ModuleName(module_name) = module_name
   let assert Ok(file_name) =
     string.split(module_name, "/")
     |> list.last
   let is_used_somewhere = {
     use module <- list.flat_map(ast)
     let assert FileAst(module) = module
-    let assert Module(imports, _, _, _, _, _, fns) = module
+    let assert AST(imports, _, _, _, _, _, fns) = module
     let is_imported =
       list.map(imports, fn(imp) {
         case imp {

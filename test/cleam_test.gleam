@@ -44,7 +44,7 @@ pub fn file_path_to_module_name_test() {
 pub fn public_functions_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
-  |> ast.pub_fns
+  |> ast.public_funs
   |> should.equal([
     PublicFun("fun_orphan"),
     PublicFun("dep_fun_imported_as_alias"),
@@ -59,23 +59,29 @@ pub fn public_functions_test() {
 pub fn public_function_used_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
-  |> ast.is_pub_fn_used(PublicFun("dep_fun"), "fixtures/dependency")
+  |> ast.is_pub_fun_used(
+    PublicFun("dep_fun"),
+    ModuleName("fixtures/dependency"),
+  )
   |> should.equal(True)
 }
 
 pub fn public_function_not_used_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
-  |> ast.is_pub_fn_used(PublicFun("fun_orphan"), "fixtures/dependency")
+  |> ast.is_pub_fun_used(
+    PublicFun("fun_orphan"),
+    ModuleName("fixtures/dependency"),
+  )
   |> should.equal(False)
 }
 
 pub fn public_function_used_inside_block_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
-  |> ast.is_pub_fn_used(
+  |> ast.is_pub_fun_used(
     PublicFun("dep_fun_inside_block"),
-    "fixtures/dependency",
+    ModuleName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
@@ -83,9 +89,9 @@ pub fn public_function_used_inside_block_test() {
 pub fn public_function_used_inside_nested_block_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
-  |> ast.is_pub_fn_used(
+  |> ast.is_pub_fun_used(
     PublicFun("dep_fun_nested_inside_block"),
-    "fixtures/dependency",
+    ModuleName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
@@ -93,16 +99,19 @@ pub fn public_function_used_inside_nested_block_test() {
 pub fn public_function_used_inside_use_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
-  |> ast.is_pub_fn_used(PublicFun("dep_fun_inside_use"), "fixtures/dependency")
+  |> ast.is_pub_fun_used(
+    PublicFun("dep_fun_inside_use"),
+    ModuleName("fixtures/dependency"),
+  )
   |> should.equal(True)
 }
 
 pub fn public_function_used_inside_clojure_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
-  |> ast.is_pub_fn_used(
+  |> ast.is_pub_fun_used(
     PublicFun("dep_fun_inside_clojure"),
-    "fixtures/dependency",
+    ModuleName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
@@ -110,9 +119,9 @@ pub fn public_function_used_inside_clojure_test() {
 pub fn public_function_imported_as_alias_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
-  |> ast.is_pub_fn_used(
+  |> ast.is_pub_fun_used(
     PublicFun("dep_fun_imported_as_alias"),
-    "fixtures/dependency",
+    ModuleName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
