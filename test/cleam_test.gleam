@@ -42,19 +42,22 @@ pub fn file_path_to_module_name_test() {
 }
 
 pub fn public_functions_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/dependency.gleam")])
   |> ast_fun.files_ast
-  |> ast_fun.public_funs
-  |> should.equal([
-    PublicFun("fun_orphan"),
-    PublicFun("dep_fun_module_as_alias"),
-    PublicFun("dep_fun_imported_as_alias"),
-    PublicFun("dep_fun_inside_clojure"),
-    PublicFun("dep_fun_inside_use"),
-    PublicFun("dep_fun_nested_inside_block"),
-    PublicFun("dep_fun_inside_block"),
-    PublicFun("dep_fun"),
-  ])
+  |> list.each(fn(file_ast) {
+    file_ast
+    |> ast_fun.public_funs
+    |> should.equal([
+      PublicFun("fun_orphan"),
+      PublicFun("dep_fun_module_as_alias"),
+      PublicFun("dep_fun_imported_as_alias"),
+      PublicFun("dep_fun_inside_clojure"),
+      PublicFun("dep_fun_inside_use"),
+      PublicFun("dep_fun_nested_inside_block"),
+      PublicFun("dep_fun_inside_block"),
+      PublicFun("dep_fun"),
+    ])
+  })
 }
 
 pub fn public_function_used_test() {

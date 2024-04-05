@@ -33,8 +33,7 @@ pub fn files_ast(files_contents) {
   FileAst(ast)
 }
 
-pub fn public_funs(files_ast) {
-  use file_ast <- list.flat_map(files_ast)
+pub fn public_funs(file_ast) {
   let assert FileAst(ast) = file_ast
   let assert AST(_, _, _, _, _, _, funs) = ast
   use fun_def <- list.flat_map(funs)
