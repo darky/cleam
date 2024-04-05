@@ -1,5 +1,6 @@
 import internal/fs.{FilePath, FilesDir}
 import internal/ast_fun.{PublicFun}
+import internal/ast
 import gleam/list
 import gleam/io
 
@@ -10,7 +11,7 @@ pub fn main() {
 pub fn core(dir) {
   let file_paths = fs.files_paths(dir)
   let flle_contents = fs.files_contents(file_paths)
-  let ast_list = ast_fun.files_ast(flle_contents)
+  let ast_list = ast.files_ast(flle_contents)
   let indexes =
     list.length(file_paths)
     |> list.range(0, _)
