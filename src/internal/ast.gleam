@@ -49,27 +49,29 @@ pub fn public_funs(files_ast) {
 pub fn is_pub_fun_used(files_ast, pub_fun_name, module_full_name) {
   let module_name = module_full_name_to_module_name(module_full_name)
   let is_used_somewhere = {
-    use file_ast <- list.flat_map(files_ast)
+    use file_ast <- list.find_map(files_ast)
     let assert FileAst(ast) = file_ast
     let assert AST(imports, _, _, _, _, _, fns) = ast
     let imported_info =
       function_imported_info(imports, module_full_name, pub_fun_name)
     case imported_info {
-      FunctionImportedAsAlias -> [True]
+      FunctionImportedAsAlias -> Ok(Nil)
       ModuleImported -> {
-        use fun_def <- list.flat_map(fns)
+        use fun_def <- list.find_map(fns)
         let assert Definition(_, Function(_, _, _, _, statements, _)) = fun_def
         check_fun_name_usage(statements, pub_fun_name, module_name)
       }
-      NoImported -> []
+      NoImported -> Error(Nil)
     }
   }
-  is_used_somewhere
-  |> list.any(fn(is) { is })
+  case is_used_somewhere {
+    Ok(Nil) -> True
+    Error(Nil) -> False
+  }
 }
 
 fn check_fun_name_usage(statements, pub_fun_name, module_name) {
-  use statement <- list.flat_map(statements)
+  use statement <- list.find_map(statements)
   check_fun_name_usage_in_statement(statement, pub_fun_name, module_name)
 }
 
@@ -78,20 +80,20 @@ fn check_fun_name_usage_in_statement(statement, pub_fun_name, module_name) {
     Expression(Call(FieldAccess(Variable(var_name), field_name), _))
       if PublicFun(field_name) == pub_fun_name
       && ModuleName(var_name) == module_name
-    -> [True]
+    -> Ok(Nil)
     Expression(Call(_, params)) -> {
-      use param <- list.flat_map(params)
+      use param <- list.find_map(params)
       case param {
         Field(_, Fn(_, _, statements)) -> {
           check_fun_name_usage(statements, pub_fun_name, module_name)
         }
-        _ -> [False]
+        _ -> Error(Nil)
       }
     }
     Expression(Block(statements)) -> {
       check_fun_name_usage(statements, pub_fun_name, module_name)
     }
-    _ -> [False]
+    _ -> Error(Nil)
   }
 }
 
