@@ -4,7 +4,8 @@ import gleam/list
 import gleam/string
 import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
 import internal/ast_fun.{PublicFun}
-import internal/ast
+import internal/ast.{FileAst}
+import glance.{Definition, Import, Module}
 
 pub fn main() {
   gleeunit.main()
@@ -17,11 +18,6 @@ const file_paths = [
 
 pub fn files_list_test() {
   fs.files_paths(FilesDir("test/fixtures"))
-  |> list.sort(fn(path1, path2) {
-    let assert FilePath(path1) = path1
-    let assert FilePath(path2) = path2
-    string.compare(path1, path2)
-  })
   |> should.equal(file_paths)
 }
 
@@ -138,5 +134,45 @@ pub fn public_function_used_in_aliased_module_test() {
     PublicFun("dep_fun_module_as_alias"),
     ModuleFullName("fixtures/dependency"),
   )
+  |> should.equal(True)
+}
+
+pub fn files_paths_with_ast_test() {
+  let resp = ast.files_paths_with_ast(FilesDir("test/fixtures"))
+  let assert Ok(resp0) = list.at(resp, 0)
+  let assert Ok(resp1) = list.at(resp, 1)
+  resp0.0
+  |> should.equal(FilePath("test/fixtures/dependency.gleam"))
+  resp1.0
+  |> should.equal(FilePath("test/fixtures/file.gleam"))
+  case resp0.1 {
+    [
+      FileAst(Module(
+        [Definition(_, Import("fixtures/dependency", _, _, _)), ..],
+        _,
+        _,
+        _,
+        _,
+        _,
+        _,
+      )),
+    ] -> True
+    _ -> False
+  }
+  |> should.equal(True)
+  case resp1.1 {
+    [
+      FileAst(Module(
+        [Definition(_, Import("gleam/int", _, _, _)), ..],
+        _,
+        _,
+        _,
+        _,
+        _,
+        _,
+      )),
+    ] -> True
+    _ -> False
+  }
   |> should.equal(True)
 }
