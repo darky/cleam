@@ -14,9 +14,9 @@ version = "1.0.0"
 
 [dependencies]
 gleam_stdlib = "~> 0.34 or ~> 1.0"
-
-[dev-dependencies]
-gleeunit = "~> 1.0"
 fswalk = "~> 2.0"
 simplifile = "~> 1.6"
 glance = "~> 0.8"
+
+[dev-dependencies]
+gleeunit = "~> 1.0"
