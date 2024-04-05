@@ -46,7 +46,7 @@ pub fn files_contents(files_paths) {
   FileContent(content)
 }
 
-pub fn file_path_to_module_name(files_dir, file_path) {
+pub fn file_path_to_module_full_name(files_dir, file_path) {
   let assert FilesDir(files_dir) = files_dir
   let assert FilePath(file_path) = file_path
   file_path

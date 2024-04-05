@@ -34,7 +34,7 @@ pub fn files_content_test() {
 }
 
 pub fn file_path_to_module_name_test() {
-  fs.file_path_to_module_name(
+  fs.file_path_to_module_full_name(
     FilesDir("test"),
     FilePath("test/fixtures/dependency.gleam"),
   )
