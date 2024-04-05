@@ -16,8 +16,8 @@ pub type FilesDir {
   FilesDir(String)
 }
 
-pub type ModuleName {
-  ModuleName(String)
+pub type ModuleFullName {
+  ModuleFullName(String)
 }
 
 pub fn files_paths(dir) {
@@ -52,5 +52,5 @@ pub fn file_path_to_module_name(files_dir, file_path) {
   file_path
   |> string.replace(files_dir <> "/", "")
   |> string.replace(".gleam", "")
-  |> ModuleName
+  |> ModuleFullName
 }

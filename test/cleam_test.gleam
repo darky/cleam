@@ -2,7 +2,7 @@ import gleeunit
 import gleeunit/should
 import gleam/list
 import gleam/string
-import internal/fs.{FileContent, FilePath, FilesDir, ModuleName}
+import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
 import internal/ast.{PublicFun}
 
 pub fn main() {
@@ -38,7 +38,7 @@ pub fn file_path_to_module_name_test() {
     FilesDir("test"),
     FilePath("test/fixtures/dependency.gleam"),
   )
-  |> should.equal(ModuleName("fixtures/dependency"))
+  |> should.equal(ModuleFullName("fixtures/dependency"))
 }
 
 pub fn public_functions_test() {
@@ -61,7 +61,7 @@ pub fn public_function_used_test() {
   |> ast.files_ast
   |> ast.is_pub_fun_used(
     PublicFun("dep_fun"),
-    ModuleName("fixtures/dependency"),
+    ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
@@ -71,7 +71,7 @@ pub fn public_function_not_used_test() {
   |> ast.files_ast
   |> ast.is_pub_fun_used(
     PublicFun("fun_orphan"),
-    ModuleName("fixtures/dependency"),
+    ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(False)
 }
@@ -81,7 +81,7 @@ pub fn public_function_used_inside_block_test() {
   |> ast.files_ast
   |> ast.is_pub_fun_used(
     PublicFun("dep_fun_inside_block"),
-    ModuleName("fixtures/dependency"),
+    ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
@@ -91,7 +91,7 @@ pub fn public_function_used_inside_nested_block_test() {
   |> ast.files_ast
   |> ast.is_pub_fun_used(
     PublicFun("dep_fun_nested_inside_block"),
-    ModuleName("fixtures/dependency"),
+    ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
@@ -101,7 +101,7 @@ pub fn public_function_used_inside_use_test() {
   |> ast.files_ast
   |> ast.is_pub_fun_used(
     PublicFun("dep_fun_inside_use"),
-    ModuleName("fixtures/dependency"),
+    ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
@@ -111,7 +111,7 @@ pub fn public_function_used_inside_clojure_test() {
   |> ast.files_ast
   |> ast.is_pub_fun_used(
     PublicFun("dep_fun_inside_clojure"),
-    ModuleName("fixtures/dependency"),
+    ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(True)
 }
@@ -121,7 +121,7 @@ pub fn public_function_imported_as_alias_test() {
   |> ast.files_ast
   |> ast.is_pub_fun_used(
     PublicFun("dep_fun_imported_as_alias"),
-    ModuleName("fixtures/dependency"),
+    ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(True)
 }

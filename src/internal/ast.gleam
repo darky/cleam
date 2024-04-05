@@ -1,10 +1,11 @@
 import gleam/string
 import gleam/list
+import gleam/result
 import glance.{
   type Module as AST, Block, Call, Definition, Expression, Field, FieldAccess,
   Fn, Function, Import, Module as AST, Public, UnqualifiedImport, Variable,
 }
-import internal/fs.{FileContent, ModuleName}
+import internal/fs.{FileContent, ModuleFullName}
 
 const main_fun_name = "main"
 
@@ -14,6 +15,16 @@ pub type FileAst {
 
 pub type PublicFun {
   PublicFun(String)
+}
+
+type ModuleName {
+  ModuleName(String)
+}
+
+type ImportedInfo {
+  ModuleImported
+  FunctionImportedAsAlias
+  NoImported
 }
 
 pub fn files_ast(files_contents) {
@@ -35,67 +46,83 @@ pub fn public_funs(files_ast) {
   }
 }
 
-pub fn is_pub_fun_used(ast, fun_name, module_name) {
-  let assert ModuleName(module_name) = module_name
-  let assert Ok(file_name) =
-    string.split(module_name, "/")
-    |> list.last
+pub fn is_pub_fun_used(files_ast, pub_fun_name, module_full_name) {
+  let module_name = module_full_name_to_module_name(module_full_name)
   let is_used_somewhere = {
-    use module <- list.flat_map(ast)
-    let assert FileAst(module) = module
-    let assert AST(imports, _, _, _, _, _, fns) = module
-    let is_imported =
-      list.map(imports, fn(imp) {
-        case imp {
-          Definition(_, Import(import_name, _, _, aliases))
-            if import_name == module_name
-          -> #(
-            True,
-            list.any(aliases, fn(al) {
-              let assert UnqualifiedImport(f_name, _) = al
-              PublicFun(f_name) == fun_name
-            }),
-          )
-          _ -> #(False, False)
-        }
-      })
-      |> list.find(fn(is_imp) { is_imp.0 })
-    case is_imported {
-      Ok(#(True, True)) -> [True]
-      Ok(#(True, False)) -> {
+    use file_ast <- list.flat_map(files_ast)
+    let assert FileAst(ast) = file_ast
+    let assert AST(imports, _, _, _, _, _, fns) = ast
+    let imported_info =
+      function_imported_info(imports, module_full_name, pub_fun_name)
+    case imported_info {
+      FunctionImportedAsAlias -> [True]
+      ModuleImported -> {
         use fun_def <- list.flat_map(fns)
         let assert Definition(_, Function(_, _, _, _, statements, _)) = fun_def
-        check_fun_name_usage(statements, fun_name, file_name)
+        check_fun_name_usage(statements, pub_fun_name, module_name)
       }
-      _ -> []
+      NoImported -> []
     }
   }
   is_used_somewhere
   |> list.any(fn(is) { is })
 }
 
-fn check_fun_name_usage(statements, fun_name, file_name) {
+fn check_fun_name_usage(statements, pub_fun_name, module_name) {
   use statement <- list.flat_map(statements)
-  check_fun_name_usage_in_statement(statement, fun_name, file_name)
+  check_fun_name_usage_in_statement(statement, pub_fun_name, module_name)
 }
 
-fn check_fun_name_usage_in_statement(statement, fun_name, file_name) {
+fn check_fun_name_usage_in_statement(statement, pub_fun_name, module_name) {
   case statement {
     Expression(Call(FieldAccess(Variable(var_name), field_name), _))
-      if PublicFun(field_name) == fun_name && var_name == file_name
+      if PublicFun(field_name) == pub_fun_name
+      && ModuleName(var_name) == module_name
     -> [True]
     Expression(Call(_, params)) -> {
       use param <- list.flat_map(params)
       case param {
         Field(_, Fn(_, _, statements)) -> {
-          check_fun_name_usage(statements, fun_name, file_name)
+          check_fun_name_usage(statements, pub_fun_name, module_name)
         }
         _ -> [False]
       }
     }
     Expression(Block(statements)) -> {
-      check_fun_name_usage(statements, fun_name, file_name)
+      check_fun_name_usage(statements, pub_fun_name, module_name)
     }
     _ -> [False]
   }
+}
+
+fn module_full_name_to_module_name(module_full_name) {
+  let assert ModuleFullName(module_full_name) = module_full_name
+  let assert Ok(module_name) =
+    string.split(module_full_name, "/")
+    |> list.last
+  ModuleName(module_name)
+}
+
+fn function_imported_info(imports, module_full_name, pub_fun_name) {
+  let imported_info =
+    list.find_map(imports, fn(imp) {
+      case imp {
+        Definition(_, Import(import_name, _, _, aliases))
+          if ModuleFullName(import_name) == module_full_name
+        ->
+          case
+            list.any(aliases, fn(alias) {
+              let assert UnqualifiedImport(fun_name, _) = alias
+              PublicFun(fun_name) == pub_fun_name
+            })
+          {
+            True -> Ok(FunctionImportedAsAlias)
+            False -> Ok(ModuleImported)
+          }
+        _ -> Error(NoImported)
+      }
+    })
+    |> result.or(Ok(NoImported))
+  let assert Ok(imported_info) = imported_info
+  imported_info
 }
