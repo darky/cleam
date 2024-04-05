@@ -1,5 +1,6 @@
 import fixtures/dependency.{dep_fun_imported_as_alias}
 import gleam/list
+import fixtures/dependency as dep
 
 pub fn main() {
   dependency.dep_fun()
@@ -15,4 +16,6 @@ pub fn main() {
   dependency.dep_fun_inside_use()
 
   dep_fun_imported_as_alias()
+
+  dep.dep_fun_module_as_alias()
 }

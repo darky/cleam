@@ -47,6 +47,7 @@ pub fn public_functions_test() {
   |> ast_fun.public_funs
   |> should.equal([
     PublicFun("fun_orphan"),
+    PublicFun("dep_fun_module_as_alias"),
     PublicFun("dep_fun_imported_as_alias"),
     PublicFun("dep_fun_inside_clojure"),
     PublicFun("dep_fun_inside_use"),
@@ -121,6 +122,16 @@ pub fn public_function_imported_as_alias_test() {
   |> ast_fun.files_ast
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_imported_as_alias"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(True)
+}
+
+pub fn public_function_used_in_aliased_module_test() {
+  fs.files_contents(file_paths)
+  |> ast_fun.files_ast
+  |> ast_fun.is_pub_fun_used(
+    PublicFun("dep_fun_module_as_alias"),
     ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(True)
