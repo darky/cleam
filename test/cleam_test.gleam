@@ -3,7 +3,7 @@ import gleeunit/should
 import gleam/list
 import gleam/string
 import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
-import internal/ast.{PublicFun}
+import internal/ast_fun.{PublicFun}
 
 pub fn main() {
   gleeunit.main()
@@ -43,8 +43,8 @@ pub fn file_path_to_module_name_test() {
 
 pub fn public_functions_test() {
   fs.files_contents(file_paths)
-  |> ast.files_ast
-  |> ast.public_funs
+  |> ast_fun.files_ast
+  |> ast_fun.public_funs
   |> should.equal([
     PublicFun("fun_orphan"),
     PublicFun("dep_fun_imported_as_alias"),
@@ -58,8 +58,8 @@ pub fn public_functions_test() {
 
 pub fn public_function_used_test() {
   fs.files_contents(file_paths)
-  |> ast.files_ast
-  |> ast.is_pub_fun_used(
+  |> ast_fun.files_ast
+  |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun"),
     ModuleFullName("fixtures/dependency"),
   )
@@ -68,8 +68,8 @@ pub fn public_function_used_test() {
 
 pub fn public_function_not_used_test() {
   fs.files_contents(file_paths)
-  |> ast.files_ast
-  |> ast.is_pub_fun_used(
+  |> ast_fun.files_ast
+  |> ast_fun.is_pub_fun_used(
     PublicFun("fun_orphan"),
     ModuleFullName("fixtures/dependency"),
   )
@@ -78,8 +78,8 @@ pub fn public_function_not_used_test() {
 
 pub fn public_function_used_inside_block_test() {
   fs.files_contents(file_paths)
-  |> ast.files_ast
-  |> ast.is_pub_fun_used(
+  |> ast_fun.files_ast
+  |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_block"),
     ModuleFullName("fixtures/dependency"),
   )
@@ -88,8 +88,8 @@ pub fn public_function_used_inside_block_test() {
 
 pub fn public_function_used_inside_nested_block_test() {
   fs.files_contents(file_paths)
-  |> ast.files_ast
-  |> ast.is_pub_fun_used(
+  |> ast_fun.files_ast
+  |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_nested_inside_block"),
     ModuleFullName("fixtures/dependency"),
   )
@@ -98,8 +98,8 @@ pub fn public_function_used_inside_nested_block_test() {
 
 pub fn public_function_used_inside_use_test() {
   fs.files_contents(file_paths)
-  |> ast.files_ast
-  |> ast.is_pub_fun_used(
+  |> ast_fun.files_ast
+  |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_use"),
     ModuleFullName("fixtures/dependency"),
   )
@@ -108,8 +108,8 @@ pub fn public_function_used_inside_use_test() {
 
 pub fn public_function_used_inside_clojure_test() {
   fs.files_contents(file_paths)
-  |> ast.files_ast
-  |> ast.is_pub_fun_used(
+  |> ast_fun.files_ast
+  |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_clojure"),
     ModuleFullName("fixtures/dependency"),
   )
@@ -118,8 +118,8 @@ pub fn public_function_used_inside_clojure_test() {
 
 pub fn public_function_imported_as_alias_test() {
   fs.files_contents(file_paths)
-  |> ast.files_ast
-  |> ast.is_pub_fun_used(
+  |> ast_fun.files_ast
+  |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_imported_as_alias"),
     ModuleFullName("fixtures/dependency"),
   )
