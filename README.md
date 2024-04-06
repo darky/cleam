@@ -1,9 +1,11 @@
 # cleam
 
-Cleam for clean Gleam. Detect unused exports.
-
 [![Package Version](https://img.shields.io/hexpm/v/cleam)](https://hex.pm/packages/cleam)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/cleam/)
+
+![logo](logo.png)
+
+Cleam for clean Gleam. Detect unused exports.
 
 ```sh
 gleam add cleam --dev
@@ -12,7 +14,7 @@ gleam add cleam --dev
 gleam run -m cleam
 ```
 
-## Progress
+## Current support
 
 * [x] Functions
 * [ ] Constants
