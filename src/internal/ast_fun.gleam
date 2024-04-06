@@ -27,7 +27,7 @@ pub fn public_funs(file_ast) {
   let assert FileAst(ast) = file_ast
   let assert AST(_, _, _, _, _, _, funs) = ast
   use fun_def <- list.flat_map(funs)
-  let assert Definition(_, Function(fun_name, is_public, _, _, _, _)) = fun_def
+  let assert Definition(_, Function(fun_name, is_public, ..)) = fun_def
   case is_public {
     Public if fun_name != main_fun_name -> [PublicFun(fun_name)]
     _ -> []
