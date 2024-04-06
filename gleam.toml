@@ -1,5 +1,8 @@
 name = "cleam"
 version = "1.0.0"
+description = "Cleam for clean Gleam. Detect unused exports."
+licences = ["MIT"]
+repository = { type = "github", user = "darky", repo = "cleam" }
 
 # Fill out these fields if you intend to generate HTML documentation or publish
 # your project to the Hex package manager.
