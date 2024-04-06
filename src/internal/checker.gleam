@@ -3,8 +3,8 @@ import gleam/list
 import internal/ast_fun
 import internal/fs
 
-pub fn not_used_functions(dir) {
-  let fp_with_ast = ast.files_paths_with_ast(dir)
+pub fn not_used_functions(dir, test_dir) {
+  let fp_with_ast = ast.files_paths_with_ast(dir, test_dir)
   use #(file_path, file_ast, another_files_ast) <- list.flat_map(fp_with_ast)
   let public_funs = ast_fun.public_funs(file_ast)
   use public_fun <- list.flat_map(public_funs)

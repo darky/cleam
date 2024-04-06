@@ -7,6 +7,7 @@ import internal/ast_fun.{PublicFun}
 import internal/ast.{AnotherFilesAst, FileAst}
 import internal/checker
 import glance.{Definition, Import, Module}
+import gleam/option.{None}
 
 pub fn main() {
   gleeunit.main()
@@ -172,7 +173,7 @@ pub fn public_function_called_as_argument_test() {
 }
 
 pub fn files_paths_with_ast_test() {
-  let resp = ast.files_paths_with_ast(FilesDir("test/fixtures"))
+  let resp = ast.files_paths_with_ast(FilesDir("test/fixtures"), None)
   let assert Ok(resp0) = list.at(resp, 0)
   let assert Ok(resp1) = list.at(resp, 1)
   resp0.0
@@ -196,7 +197,7 @@ pub fn files_paths_with_ast_test() {
 }
 
 pub fn not_used_functions_test() {
-  checker.not_used_functions(FilesDir("test"))
+  checker.not_used_functions(FilesDir("test"), None)
   |> list.filter(fn(not_used) {
     let #(_, FilePath(file_path)) = not_used
     case file_path {
