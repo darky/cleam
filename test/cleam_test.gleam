@@ -12,18 +12,19 @@ pub fn main() {
   gleeunit.main()
 }
 
-const file_paths = [
-  FilePath("test/fixtures/dependency.gleam"),
-  FilePath("test/fixtures/file.gleam"),
-]
-
 pub fn files_list_test() {
   fs.files_paths(FilesDir("test/fixtures"))
-  |> should.equal(file_paths)
+  |> should.equal([
+    FilePath("test/fixtures/dependency.gleam"),
+    FilePath("test/fixtures/file.gleam"),
+  ])
 }
 
 pub fn files_content_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([
+    FilePath("test/fixtures/dependency.gleam"),
+    FilePath("test/fixtures/file.gleam"),
+  ])
   |> list.map(fn(content) {
     let assert FileContent(content) = content
     string.starts_with(content, "import")
@@ -59,7 +60,7 @@ pub fn public_functions_test() {
 }
 
 pub fn public_function_used_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
@@ -70,7 +71,7 @@ pub fn public_function_used_test() {
 }
 
 pub fn public_function_not_used_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
@@ -81,7 +82,7 @@ pub fn public_function_not_used_test() {
 }
 
 pub fn public_function_used_inside_block_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
@@ -92,7 +93,7 @@ pub fn public_function_used_inside_block_test() {
 }
 
 pub fn public_function_used_inside_nested_block_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
@@ -103,7 +104,7 @@ pub fn public_function_used_inside_nested_block_test() {
 }
 
 pub fn public_function_used_inside_use_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
@@ -114,7 +115,7 @@ pub fn public_function_used_inside_use_test() {
 }
 
 pub fn public_function_used_inside_clojure_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
@@ -125,7 +126,7 @@ pub fn public_function_used_inside_clojure_test() {
 }
 
 pub fn public_function_imported_as_alias_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
@@ -136,7 +137,7 @@ pub fn public_function_imported_as_alias_test() {
 }
 
 pub fn public_function_used_in_aliased_module_test() {
-  fs.files_contents(file_paths)
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
