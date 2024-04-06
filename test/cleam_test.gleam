@@ -26,6 +26,11 @@ pub fn files_content_test() {
     FilePath("test/fixtures/dependency.gleam"),
     FilePath("test/fixtures/file.gleam"),
   ])
+  |> list.sort(fn(c1, c2) {
+    let assert FileContent(c1) = c1
+    let assert FileContent(c2) = c2
+    string.compare(c1, c2)
+  })
   |> list.map(fn(content) {
     let assert FileContent(content) = content
     string.starts_with(content, "import")
@@ -185,7 +190,15 @@ pub fn public_function_called_as_pipe_test() {
 }
 
 pub fn files_paths_with_ast_test() {
-  let resp = ast.files_paths_with_ast(FilesDir("test/fixtures"), None)
+  let resp =
+    ast.files_paths_with_ast(FilesDir("test/fixtures"), None)
+    |> list.sort(fn(c1, c2) {
+      let #(fp1, _, _) = c1
+      let #(fp2, _, _) = c2
+      let assert FilePath(fp1) = fp1
+      let assert FilePath(fp2) = fp2
+      string.compare(fp1, fp2)
+    })
   let assert Ok(resp0) = list.at(resp, 0)
   let assert Ok(resp1) = list.at(resp, 1)
   resp0.0
