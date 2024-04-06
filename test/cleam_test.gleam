@@ -15,6 +15,11 @@ pub fn main() {
 
 pub fn files_list_test() {
   fs.files_paths(FilesDir("test/fixtures"))
+  |> list.sort(fn(fp1, fp2) {
+    let assert FilePath(fp1) = fp1
+    let assert FilePath(fp2) = fp2
+    string.compare(fp1, fp2)
+  })
   |> should.equal([
     FilePath("test/fixtures/dependency.gleam"),
     FilePath("test/fixtures/file.gleam"),
