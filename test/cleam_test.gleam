@@ -4,7 +4,8 @@ import gleam/list
 import gleam/string
 import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
 import internal/ast_fun.{PublicFun}
-import internal/ast.{FileAst}
+import internal/ast.{AnotherFilesAst, FileAst}
+import internal/checker
 import glance.{Definition, Import, Module}
 
 pub fn main() {
@@ -60,6 +61,7 @@ pub fn public_functions_test() {
 pub fn public_function_used_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
+  |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun"),
     ModuleFullName("fixtures/dependency"),
@@ -70,6 +72,7 @@ pub fn public_function_used_test() {
 pub fn public_function_not_used_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
+  |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("fun_orphan"),
     ModuleFullName("fixtures/dependency"),
@@ -80,6 +83,7 @@ pub fn public_function_not_used_test() {
 pub fn public_function_used_inside_block_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
+  |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_block"),
     ModuleFullName("fixtures/dependency"),
@@ -90,6 +94,7 @@ pub fn public_function_used_inside_block_test() {
 pub fn public_function_used_inside_nested_block_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
+  |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_nested_inside_block"),
     ModuleFullName("fixtures/dependency"),
@@ -100,6 +105,7 @@ pub fn public_function_used_inside_nested_block_test() {
 pub fn public_function_used_inside_use_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
+  |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_use"),
     ModuleFullName("fixtures/dependency"),
@@ -110,6 +116,7 @@ pub fn public_function_used_inside_use_test() {
 pub fn public_function_used_inside_clojure_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
+  |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_clojure"),
     ModuleFullName("fixtures/dependency"),
@@ -120,6 +127,7 @@ pub fn public_function_used_inside_clojure_test() {
 pub fn public_function_imported_as_alias_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
+  |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_imported_as_alias"),
     ModuleFullName("fixtures/dependency"),
@@ -130,6 +138,7 @@ pub fn public_function_imported_as_alias_test() {
 pub fn public_function_used_in_aliased_module_test() {
   fs.files_contents(file_paths)
   |> ast.files_ast
+  |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_module_as_alias"),
     ModuleFullName("fixtures/dependency"),
@@ -145,16 +154,32 @@ pub fn files_paths_with_ast_test() {
   |> should.equal(FilePath("test/fixtures/dependency.gleam"))
   resp1.0
   |> should.equal(FilePath("test/fixtures/file.gleam"))
-  case resp0.1 {
-    [
+  case resp0.2 {
+    AnotherFilesAst([
       FileAst(Module([Definition(_, Import("fixtures/dependency", ..)), ..], ..)),
-    ] -> True
+    ]) -> True
     _ -> False
   }
   |> should.equal(True)
-  case resp1.1 {
-    [FileAst(Module([Definition(_, Import("gleam/int", ..)), ..], ..))] -> True
+  case resp1.2 {
+    AnotherFilesAst([
+      FileAst(Module([Definition(_, Import("gleam/int", ..)), ..], ..)),
+    ]) -> True
     _ -> False
   }
   |> should.equal(True)
+}
+
+pub fn not_used_functions_test() {
+  checker.not_used_functions(FilesDir("test"))
+  |> list.filter(fn(not_used) {
+    let #(_, FilePath(file_path)) = not_used
+    case file_path {
+      "test/fixtures/dependency.gleam" -> True
+      _ -> False
+    }
+  })
+  |> should.equal([
+    #(PublicFun("fun_orphan"), FilePath("test/fixtures/dependency.gleam")),
+  ])
 }

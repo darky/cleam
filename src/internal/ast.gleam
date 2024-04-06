@@ -6,6 +6,10 @@ pub type FileAst {
   FileAst(AST)
 }
 
+pub type AnotherFilesAst {
+  AnotherFilesAst(List(FileAst))
+}
+
 pub fn files_ast(files_contents) {
   use content <- list.map(files_contents)
   let assert FileContent(content) = content
@@ -20,13 +24,17 @@ pub fn files_paths_with_ast(dir) {
   let indexes = list.range(0, list.length(file_paths) - 1)
   use index <- list.map(indexes)
   let assert Ok(file_path) = list.at(file_paths, index)
+  let assert Ok(file_ast) = list.at(ast_list, index)
   #(
     file_path,
-    list.filter_map(indexes, fn(idx) {
-      case idx == index {
-        True -> Error(Nil)
-        False -> list.at(ast_list, idx)
-      }
-    }),
+    file_ast,
+    AnotherFilesAst(
+      list.filter_map(indexes, fn(idx) {
+        case idx == index {
+          True -> Error(Nil)
+          False -> list.at(ast_list, idx)
+        }
+      }),
+    ),
   )
 }
