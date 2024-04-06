@@ -32,6 +32,10 @@ pub fn dep_fun_assigned() {
   int.to_string(123)
 }
 
+pub fn dep_fun_called_as_argument() {
+  4
+}
+
 pub fn fun_orphan() {
   123
 }

@@ -85,6 +85,16 @@ fn check_fun_name_usage_in_statement(statement, pub_fun_name, module_name) {
     Assignment(_, _, _, Call(FieldAccess(Variable(var_name), field_name), _)) if module_name
       == ModuleName(var_name)
       && PublicFun(field_name) == pub_fun_name -> Ok(Nil)
+    Assignment(_, _, _, Call(FieldAccess(_, _), params)) -> {
+      use param <- list.find_map(params)
+      case param {
+        Field(_, Call(FieldAccess(Variable(var_name), field_name), _))
+          if module_name == ModuleName(var_name)
+          && PublicFun(field_name) == pub_fun_name
+        -> Ok(Nil)
+        _ -> Error(Nil)
+      }
+    }
     _ -> Error(Nil)
   }
 }

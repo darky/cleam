@@ -48,6 +48,7 @@ pub fn public_functions_test() {
     |> ast_fun.public_funs
     |> should.equal([
       PublicFun("fun_orphan"),
+      PublicFun("dep_fun_called_as_argument"),
       PublicFun("dep_fun_assigned"),
       PublicFun("dep_fun_module_as_alias"),
       PublicFun("dep_fun_imported_as_alias"),
@@ -154,6 +155,17 @@ pub fn public_function_used_as_assigned_test() {
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_assigned"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(True)
+}
+
+pub fn public_function_called_as_argument_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_fun.is_pub_fun_used(
+    PublicFun("dep_fun_called_as_argument"),
     ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(True)
