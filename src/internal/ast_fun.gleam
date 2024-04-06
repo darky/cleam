@@ -66,7 +66,7 @@ fn check_fun_usage(statements, pub_fun_name, module_name) {
     statement
     |> string.inspect
     |> string.contains(
-      "Call(FieldAccess(Variable(\""
+      "FieldAccess(Variable(\""
       <> module_name
       <> "\"), \""
       <> pub_fun_name

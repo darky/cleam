@@ -36,6 +36,10 @@ pub fn dep_fun_called_as_argument() {
   4
 }
 
+pub fn dep_fun_called_in_pipe(n) {
+  n + 1
+}
+
 pub fn fun_orphan() {
   123
 }

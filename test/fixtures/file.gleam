@@ -11,6 +11,9 @@ pub fn main() {
     { dependency.dep_fun_nested_inside_block() }
   }
 
+  1
+  |> dependency.dep_fun_called_in_pipe
+
   let ident = function.identity(dependency.dep_fun_called_as_argument())
 
   list.map([1, 2, 3], fn(_) { dependency.dep_fun_inside_clojure() })
