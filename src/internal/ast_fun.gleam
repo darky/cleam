@@ -1,8 +1,9 @@
 import gleam/string
 import gleam/list
 import glance.{
-  type Module as AST, Block, Call, Definition, Expression, Field, FieldAccess,
-  Fn, Function, Import, Module as AST, Public, UnqualifiedImport, Variable,
+  type Module as AST, Assignment, Block, Call, Definition, Expression, Field,
+  FieldAccess, Fn, Function, Import, Module as AST, Public, UnqualifiedImport,
+  Variable,
 }
 import internal/fs.{ModuleFullName}
 import gleam/option.{None, Some}
@@ -81,6 +82,9 @@ fn check_fun_name_usage_in_statement(statement, pub_fun_name, module_name) {
     Expression(Block(statements)) -> {
       check_fun_name_usage(statements, pub_fun_name, module_name)
     }
+    Assignment(_, _, _, Call(FieldAccess(Variable(var_name), field_name), _)) if module_name
+      == ModuleName(var_name)
+      && PublicFun(field_name) == pub_fun_name -> Ok(Nil)
     _ -> Error(Nil)
   }
 }

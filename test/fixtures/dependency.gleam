@@ -28,6 +28,10 @@ pub fn dep_fun_module_as_alias() {
   int.to_string(123)
 }
 
+pub fn dep_fun_assigned() {
+  int.to_string(123)
+}
+
 pub fn fun_orphan() {
   123
 }

@@ -18,4 +18,7 @@ pub fn main() {
   dep_fun_imported_as_alias()
 
   dep.dep_fun_module_as_alias()
+
+  let resp = dependency.dep_fun_assigned()
+  resp
 }
