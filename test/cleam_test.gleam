@@ -228,7 +228,8 @@ pub fn files_paths_with_ast_test() {
 }
 
 pub fn not_used_functions_test() {
-  checker.not_used_functions(FilesDir("test"), None)
+  ast.files_paths_with_ast(FilesDir("test"), None)
+  |> checker.not_used_functions(FilesDir("test"), _)
   |> list.filter(fn(not_used) {
     let #(_, FilePath(file_path)) = not_used
     case file_path {
@@ -238,6 +239,21 @@ pub fn not_used_functions_test() {
   })
   |> should.equal([
     #(PublicFun("fun_orphan"), FilePath("test/fixtures/dependency.gleam")),
+  ])
+}
+
+pub fn not_used_const_test() {
+  ast.files_paths_with_ast(FilesDir("test"), None)
+  |> checker.not_used_const(FilesDir("test"), _)
+  |> list.filter(fn(not_used) {
+    let #(_, FilePath(file_path)) = not_used
+    case file_path {
+      "test/fixtures/dependency.gleam" -> True
+      _ -> False
+    }
+  })
+  |> should.equal([
+    #(PublicConst("const_orphan"), FilePath("test/fixtures/dependency.gleam")),
   ])
 }
 
