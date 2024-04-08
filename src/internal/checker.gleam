@@ -15,7 +15,7 @@ pub fn not_used_functions(dir, test_dir) {
       fs.file_path_to_module_full_name(dir, file_path),
     )
   case is_public_fun_used {
-    True -> []
-    False -> [#(public_fun, file_path)]
+    Ok(Nil) -> []
+    Error(Nil) -> [#(public_fun, file_path)]
   }
 }

@@ -35,26 +35,20 @@ pub fn public_funs(file_ast) {
 }
 
 pub fn is_pub_fun_used(files_ast, pub_fun_name, module_full_name) {
-  let is_used_somewhere = {
-    let assert AnotherFilesAst(files_ast) = files_ast
-    use file_ast <- list.find_map(files_ast)
-    let assert FileAst(ast) = file_ast
-    let assert AST(imports, _, _, _, _, _, fns) = ast
-    let imported_info_list =
-      function_imported_info(imports, module_full_name, pub_fun_name)
-    use imported_info <- list.find_map(imported_info_list)
-    case imported_info {
-      FunctionImportedAsAlias -> Ok(Nil)
-      ModuleImported(module_name) -> {
-        use fun_def <- list.find_map(fns)
-        let assert Definition(_, Function(_, _, _, _, statements, _)) = fun_def
-        check_fun_usage(statements, pub_fun_name, module_name)
-      }
+  let assert AnotherFilesAst(files_ast) = files_ast
+  use file_ast <- list.find_map(files_ast)
+  let assert FileAst(ast) = file_ast
+  let assert AST(imports, _, _, _, _, _, fns) = ast
+  let imported_info_list =
+    function_imported_info(imports, module_full_name, pub_fun_name)
+  use imported_info <- list.find_map(imported_info_list)
+  case imported_info {
+    FunctionImportedAsAlias -> Ok(Nil)
+    ModuleImported(module_name) -> {
+      use fun_def <- list.find_map(fns)
+      let assert Definition(_, Function(_, _, _, _, statements, _)) = fun_def
+      check_fun_usage(statements, pub_fun_name, module_name)
     }
-  }
-  case is_used_somewhere {
-    Ok(Nil) -> True
-    Error(Nil) -> False
   }
 }
 

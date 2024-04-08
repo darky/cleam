@@ -81,7 +81,7 @@ pub fn public_function_used_test() {
     PublicFun("dep_fun"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_not_used_test() {
@@ -92,7 +92,7 @@ pub fn public_function_not_used_test() {
     PublicFun("fun_orphan"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(False)
+  |> should.equal(Error(Nil))
 }
 
 pub fn public_function_used_inside_block_test() {
@@ -103,7 +103,7 @@ pub fn public_function_used_inside_block_test() {
     PublicFun("dep_fun_inside_block"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_used_inside_nested_block_test() {
@@ -114,7 +114,7 @@ pub fn public_function_used_inside_nested_block_test() {
     PublicFun("dep_fun_nested_inside_block"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_used_inside_use_test() {
@@ -125,7 +125,7 @@ pub fn public_function_used_inside_use_test() {
     PublicFun("dep_fun_inside_use"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_used_inside_clojure_test() {
@@ -136,7 +136,7 @@ pub fn public_function_used_inside_clojure_test() {
     PublicFun("dep_fun_inside_clojure"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_imported_as_alias_test() {
@@ -147,7 +147,7 @@ pub fn public_function_imported_as_alias_test() {
     PublicFun("dep_fun_imported_as_alias"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_used_in_aliased_module_test() {
@@ -158,7 +158,7 @@ pub fn public_function_used_in_aliased_module_test() {
     PublicFun("dep_fun_module_as_alias"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_used_as_assigned_test() {
@@ -169,7 +169,7 @@ pub fn public_function_used_as_assigned_test() {
     PublicFun("dep_fun_assigned"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_called_as_argument_test() {
@@ -180,7 +180,7 @@ pub fn public_function_called_as_argument_test() {
     PublicFun("dep_fun_called_as_argument"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn public_function_called_as_pipe_test() {
@@ -191,7 +191,7 @@ pub fn public_function_called_as_pipe_test() {
     PublicFun("dep_fun_called_in_pipe"),
     ModuleFullName("fixtures/dependency"),
   )
-  |> should.equal(True)
+  |> should.equal(Ok(Nil))
 }
 
 pub fn files_paths_with_ast_test() {
