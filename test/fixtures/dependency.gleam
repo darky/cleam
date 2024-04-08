@@ -43,3 +43,11 @@ pub fn dep_fun_called_in_pipe(n) {
 pub fn fun_orphan() {
   123
 }
+
+pub const const_orphan = "orphan"
+
+pub const const_used = "used"
+
+pub const const_used_as_alias = "used"
+
+pub const const_used_in_aliased_module = "used"

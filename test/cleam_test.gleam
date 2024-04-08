@@ -3,8 +3,9 @@ import gleeunit/should
 import gleam/list
 import gleam/string
 import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
-import internal/ast.{AnotherFilesAst, FileAst, PublicFun}
+import internal/ast.{AnotherFilesAst, FileAst, PublicConst, PublicFun}
 import internal/ast_fun
+import internal/ast_const
 import internal/checker
 import glance.{Definition, Import, Module}
 import gleam/option.{None}
@@ -238,4 +239,19 @@ pub fn not_used_functions_test() {
   |> should.equal([
     #(PublicFun("fun_orphan"), FilePath("test/fixtures/dependency.gleam")),
   ])
+}
+
+pub fn public_const_test() {
+  fs.files_contents([FilePath("test/fixtures/dependency.gleam")])
+  |> ast.files_ast
+  |> list.each(fn(file_ast) {
+    file_ast
+    |> ast_const.public_const
+    |> should.equal([
+      PublicConst("const_used_in_aliased_module"),
+      PublicConst("const_used_as_alias"),
+      PublicConst("const_used"),
+      PublicConst("const_orphan"),
+    ])
+  })
 }

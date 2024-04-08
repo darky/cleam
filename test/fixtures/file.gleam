@@ -1,9 +1,15 @@
-import fixtures/dependency.{dep_fun_imported_as_alias}
+import fixtures/dependency.{const_used_as_alias, dep_fun_imported_as_alias}
 import gleam/list
 import gleam/function
 import fixtures/dependency as dep
 
 pub fn main() {
+  dependency.const_used
+
+  const_used_as_alias
+
+  dep.const_used_in_aliased_module
+
   dependency.dep_fun()
 
   {

@@ -25,6 +25,10 @@ pub type PublicFun {
   PublicFun(String)
 }
 
+pub type PublicConst {
+  PublicConst(String)
+}
+
 pub fn files_ast(files_contents) {
   use content <- list.map(files_contents)
   let assert FileContent(content) = content
