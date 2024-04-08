@@ -255,3 +255,47 @@ pub fn public_const_test() {
     ])
   })
 }
+
+pub fn public_const_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_const.is_pub_const_used(
+    PublicConst("const_used"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_const_used_as_alias_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_const.is_pub_const_used(
+    PublicConst("const_used_as_alias"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_const_used_in_aliased_module_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_const.is_pub_const_used(
+    PublicConst("const_used_in_aliased_module"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_const_not_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_const.is_pub_const_used(
+    PublicConst("const_orphan"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Error(Nil))
+}
