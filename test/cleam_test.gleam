@@ -3,8 +3,8 @@ import gleeunit/should
 import gleam/list
 import gleam/string
 import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
-import internal/ast_fun.{PublicFun}
-import internal/ast.{AnotherFilesAst, FileAst}
+import internal/ast.{AnotherFilesAst, FileAst, PublicFun}
+import internal/ast_fun
 import internal/checker
 import glance.{Definition, Import, Module}
 import gleam/option.{None}

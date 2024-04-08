@@ -1,7 +1,8 @@
 import gleam/list
-import internal/fs.{FileContent, FilesDir}
-import glance.{type Module as AST}
+import internal/fs.{FileContent, FilesDir, ModuleFullName}
+import glance.{type Module as AST, Definition, Import, UnqualifiedImport}
 import gleam/option.{None, Some}
+import gleam/string
 
 pub type FileAst {
   FileAst(AST)
@@ -9,6 +10,19 @@ pub type FileAst {
 
 pub type AnotherFilesAst {
   AnotherFilesAst(List(FileAst))
+}
+
+pub type ModuleName {
+  ModuleName(String)
+}
+
+pub type ImportedInfo {
+  ModuleImported(ModuleName)
+  ImportedAsAlias
+}
+
+pub type PublicFun {
+  PublicFun(String)
 }
 
 pub fn files_ast(files_contents) {
@@ -52,4 +66,38 @@ pub fn files_paths_with_ast(dir, test_dir) {
     }
     Error(Nil) -> Error(Nil)
   }
+}
+
+pub fn imported_info(imports, module_full_name, exported) {
+  list.filter_map(imports, fn(imp) {
+    case imp {
+      Definition(_, Import(import_name, module_alias, _, aliases))
+        if ModuleFullName(import_name) == module_full_name
+      ->
+        case
+          list.any(aliases, fn(alias) {
+            let assert UnqualifiedImport(imported, _) = alias
+            PublicFun(imported) == exported
+          })
+        {
+          True -> Ok(ImportedAsAlias)
+          False ->
+            Ok(
+              ModuleImported(case module_alias {
+                Some(alias) -> ModuleName(alias)
+                None -> module_full_name_to_module_name(module_full_name)
+              }),
+            )
+        }
+      _ -> Error(Nil)
+    }
+  })
+}
+
+fn module_full_name_to_module_name(module_full_name) {
+  let assert ModuleFullName(module_full_name) = module_full_name
+  let assert Ok(module_name) =
+    string.split(module_full_name, "/")
+    |> list.last
+  ModuleName(module_name)
 }

@@ -1,6 +1,6 @@
 import internal/checker
 import internal/fs.{FilePath, FilesDir}
-import internal/ast_fun.{PublicFun}
+import internal/ast.{PublicFun}
 import gleam/list
 import gleam/io
 import gleam/option.{Some}
