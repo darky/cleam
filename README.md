@@ -17,5 +17,5 @@ gleam run -m cleam
 ## Current support
 
 * [x] Functions
-* [ ] Constants
+* [x] Constants
 * [ ] Types
