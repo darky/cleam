@@ -73,7 +73,7 @@ pub fn files_paths_with_ast(dir, test_dir) {
 pub fn imported_info(imports, module_full_name, exported) {
   list.filter_map(imports, fn(imp) {
     case imp {
-      Definition(_, Import(import_name, module_alias, _, aliases))
+      Definition(_, Import(import_name, module_alias, type_aliases, aliases))
         if ModuleFullName(import_name) == module_full_name
       ->
         case
@@ -82,6 +82,10 @@ pub fn imported_info(imports, module_full_name, exported) {
             PublicFun(imported) == exported
             || PublicConst(imported) == exported
             || PublicType(imported) == exported
+          })
+          || list.any(type_aliases, fn(type_alias) {
+            let assert UnqualifiedImport(imported, _) = type_alias
+            PublicType(imported) == exported
           })
         {
           True -> Ok(ImportedAsAlias)

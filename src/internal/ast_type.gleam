@@ -41,14 +41,24 @@ fn check_type_usage(statements, pub_type_name, module_name) {
   let assert PublicType(pub_type_name) = pub_type_name
   let assert ModuleName(module_name) = module_name
   use statement <- list.find_map(statements)
-  case
+  let serialized_statement =
     statement
     |> string.inspect
+  case
+    serialized_statement
     |> string.contains(
       "FieldAccess(Variable(\""
       <> module_name
       <> "\"), \""
       <> pub_type_name
+      <> "\")",
+    )
+    || serialized_statement
+    |> string.contains(
+      "Some(NamedType(\""
+      <> pub_type_name
+      <> "\", Some(\""
+      <> module_name
       <> "\")",
     )
   {

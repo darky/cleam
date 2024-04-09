@@ -67,3 +67,31 @@ pub type PubTypeUsedInAliasedModule {
 pub type PubTypeOrphan {
   PubTypeOrphan(name: String)
 }
+
+pub opaque type PubOpaqueTypeUsed {
+  PubOpaqueTypeUsed(n: Int)
+}
+
+pub fn pub_opaque_type(n) {
+  PubOpaqueTypeUsed(n)
+}
+
+pub opaque type PubOpaqueTypeUsedAsAlias {
+  PubOpaqueTypeUsedAsAlias(n: Int)
+}
+
+pub fn pub_opaque_type_used_as_alias(n) {
+  PubOpaqueTypeUsedAsAlias(n)
+}
+
+pub opaque type PubOpaqueTypeUsedInAliasedModule {
+  PubOpaqueTypeUsedInAliasedModule(n: Int)
+}
+
+pub fn pub_opaque_type_used_in_aliased_module(n) {
+  PubOpaqueTypeUsedInAliasedModule(n)
+}
+
+pub opaque type PubOpaqueTypeOrphan {
+  PubOpaqueTypeOrphan(n: Int)
+}

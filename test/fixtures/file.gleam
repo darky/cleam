@@ -1,11 +1,24 @@
 import fixtures/dependency.{
-  PubTypeUsedAsAlias, const_used_as_alias, dep_fun_imported_as_alias,
+  type PubOpaqueTypeUsedAsAlias, PubTypeUsedAsAlias, const_used_as_alias,
+  dep_fun_imported_as_alias,
 }
 import gleam/list
 import gleam/function
 import fixtures/dependency as dep
 
 pub fn main() {
+  let pub_opaq_type: dependency.PubOpaqueTypeUsed =
+    dependency.pub_opaque_type(0)
+  pub_opaq_type
+
+  let pub_opaq_type_as_alias: PubOpaqueTypeUsedAsAlias =
+    dep.pub_opaque_type_used_as_alias(0)
+  pub_opaq_type_as_alias
+
+  let pub_opaq_type_in_aliased_module: dep.PubOpaqueTypeUsedInAliasedModule =
+    dep.pub_opaque_type_used_in_aliased_module(0)
+  pub_opaq_type_in_aliased_module
+
   dependency.PubTypeUsed("name")
 
   PubTypeUsedAsAlias("name")

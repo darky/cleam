@@ -62,6 +62,9 @@ pub fn public_functions_test() {
     file_ast
     |> ast_fun.public_funs
     |> should.equal([
+      PublicFun("pub_opaque_type_used_in_aliased_module"),
+      PublicFun("pub_opaque_type_used_as_alias"),
+      PublicFun("pub_opaque_type"),
       PublicFun("fun_orphan"),
       PublicFun("dep_fun_called_in_pipe"),
       PublicFun("dep_fun_called_as_argument"),
@@ -319,6 +322,25 @@ pub fn public_const_not_used_test() {
   |> should.equal(Error(Nil))
 }
 
+pub fn public_types_test() {
+  fs.files_contents([FilePath("test/fixtures/dependency.gleam")])
+  |> ast.files_ast
+  |> list.each(fn(file_ast) {
+    file_ast
+    |> ast_type.public_type
+    |> should.equal([
+      PublicType("PubOpaqueTypeOrphan"),
+      PublicType("PubOpaqueTypeUsedInAliasedModule"),
+      PublicType("PubOpaqueTypeUsedAsAlias"),
+      PublicType("PubOpaqueTypeUsed"),
+      PublicType("PubTypeOrphan"),
+      PublicType("PubTypeUsedInAliasedModule"),
+      PublicType("PubTypeUsedAsAlias"),
+      PublicType("PubTypeUsed"),
+    ])
+  })
+}
+
 pub fn public_type_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
@@ -358,6 +380,50 @@ pub fn public_type_not_used_test() {
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubTypeOrphan"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Error(Nil))
+}
+
+pub fn public_opaque_type_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubOpaqueTypeUsed"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_opaque_type_used_as_alias_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubOpaqueTypeUsedAsAlias"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_opaque_type_used_in_aliased_module_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubOpaqueTypeUsedInAliasedModule"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_opaque_not_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubOpaqueTypeOrphan"),
     ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(Error(Nil))
