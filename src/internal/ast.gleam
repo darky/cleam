@@ -24,6 +24,7 @@ pub type ImportedInfo {
 pub type PublicMember {
   PublicFun(String)
   PublicConst(String)
+  PublicType(String)
 }
 
 pub fn files_ast(files_contents) {
@@ -78,7 +79,9 @@ pub fn imported_info(imports, module_full_name, exported) {
         case
           list.any(aliases, fn(alias) {
             let assert UnqualifiedImport(imported, _) = alias
-            PublicFun(imported) == exported || PublicConst(imported) == exported
+            PublicFun(imported) == exported
+            || PublicConst(imported) == exported
+            || PublicType(imported) == exported
           })
         {
           True -> Ok(ImportedAsAlias)

@@ -3,9 +3,12 @@ import gleeunit/should
 import gleam/list
 import gleam/string
 import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
-import internal/ast.{AnotherFilesAst, FileAst, PublicConst, PublicFun}
+import internal/ast.{
+  AnotherFilesAst, FileAst, PublicConst, PublicFun, PublicType,
+}
 import internal/ast_fun
 import internal/ast_const
+import internal/ast_type
 import internal/checker
 import glance.{Definition, Import, Module}
 import gleam/option.{None}
@@ -311,6 +314,50 @@ pub fn public_const_not_used_test() {
   |> AnotherFilesAst
   |> ast_const.is_pub_const_used(
     PublicConst("const_orphan"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Error(Nil))
+}
+
+pub fn public_type_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubTypeUsed"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_type_used_as_alias_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubTypeUsedAsAlias"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_type_used_in_aliased_module_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubTypeUsedInAliasedModule"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_type_not_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubTypeOrphan"),
     ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(Error(Nil))

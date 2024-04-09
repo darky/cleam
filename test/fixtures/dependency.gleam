@@ -51,3 +51,19 @@ pub const const_used = "used"
 pub const const_used_as_alias = "used"
 
 pub const const_used_in_aliased_module = "used"
+
+pub type PubTypeUsed {
+  PubTypeUsed(name: String)
+}
+
+pub type PubTypeUsedAsAlias {
+  PubTypeUsedAsAlias(name: String)
+}
+
+pub type PubTypeUsedInAliasedModule {
+  PubTypeUsedInAliasedModule(name: String)
+}
+
+pub type PubTypeOrphan {
+  PubTypeOrphan(name: String)
+}
