@@ -428,3 +428,22 @@ pub fn public_opaque_not_used_test() {
   )
   |> should.equal(Error(Nil))
 }
+
+pub fn not_used_types_test() {
+  ast.files_paths_with_ast(FilesDir("test"), None)
+  |> checker.not_used_types(FilesDir("test"), _)
+  |> list.filter(fn(not_used) {
+    let #(_, FilePath(file_path)) = not_used
+    case file_path {
+      "test/fixtures/dependency.gleam" -> True
+      _ -> False
+    }
+  })
+  |> should.equal([
+    #(
+      PublicType("PubOpaqueTypeOrphan"),
+      FilePath("test/fixtures/dependency.gleam"),
+    ),
+    #(PublicType("PubTypeOrphan"), FilePath("test/fixtures/dependency.gleam")),
+  ])
+}

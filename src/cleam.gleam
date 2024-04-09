@@ -1,6 +1,6 @@
 import internal/checker
 import internal/fs.{FilePath, FilesDir}
-import internal/ast.{PublicConst, PublicFun}
+import internal/ast.{PublicConst, PublicFun, PublicType}
 import gleam/list
 import gleam/io
 import gleam/option.{Some}
@@ -22,7 +22,18 @@ pub fn main() {
       "Const not used: " <> pub_const <> "; File path: " <> file_path,
     )
   })
-  case list.length(not_used_fun) > 0 || list.length(not_used_const) > 0 {
+  let not_used_types = checker.not_used_types(FilesDir("src"), ast_info)
+  list.each(not_used_types, fn(not_used_type) {
+    let assert #(PublicType(pub_type), FilePath(file_path)) = not_used_type
+    io.println_error(
+      "Type not used: " <> pub_type <> "; File path: " <> file_path,
+    )
+  })
+  case
+    list.length(not_used_fun) > 0
+    || list.length(not_used_const) > 0
+    || list.length(not_used_types) > 0
+  {
     True -> halt(1)
     False -> halt(0)
   }

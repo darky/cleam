@@ -1,6 +1,7 @@
 import gleam/list
 import internal/ast_fun
 import internal/ast_const
+import internal/ast_type
 import internal/fs
 
 pub fn not_used_functions(dir, ast_info) {
@@ -32,5 +33,21 @@ pub fn not_used_const(dir, ast_info) {
   case is_public_const_used {
     Ok(Nil) -> []
     Error(Nil) -> [#(public_const, file_path)]
+  }
+}
+
+pub fn not_used_types(dir, ast_info) {
+  use #(file_path, file_ast, another_files_ast) <- list.flat_map(ast_info)
+  let public_types = ast_type.public_type(file_ast)
+  use public_type <- list.flat_map(public_types)
+  let is_public_const_used =
+    ast_type.is_pub_type_used(
+      another_files_ast,
+      public_type,
+      fs.file_path_to_module_full_name(dir, file_path),
+    )
+  case is_public_const_used {
+    Ok(Nil) -> []
+    Error(Nil) -> [#(public_type, file_path)]
   }
 }
