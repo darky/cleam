@@ -18,4 +18,4 @@ gleam run -m cleam
 
 * [x] Functions
 * [x] Constants
-* [ ] Types
+* [ ] Types (in progress)
