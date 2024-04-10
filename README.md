@@ -5,7 +5,7 @@
 
 ![logo](logo.png)
 
-Cleam for clean Gleam. Detect unused exports, i.e. public functions, tests and types, that not used in another files. 
+Cleam for clean Gleam. Detect unused exports, i.e. public functions, const and types, that not used in another files. 
 
 ## How to
 
