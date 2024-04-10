@@ -39,6 +39,5 @@ pub fn main() {
   }
 }
 
-@target(erlang)
 @external(erlang, "erlang", "halt")
 fn halt(a: Int) -> Nil
