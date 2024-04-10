@@ -10,7 +10,7 @@ const main_fun_name = "main"
 
 pub fn public_funs(file_ast) {
   let assert FileAst(ast) = file_ast
-  let assert AST(_, _, _, _, _, _, funs) = ast
+  let assert AST(_, _, _, _, funs) = ast
   use fun_def <- list.flat_map(funs)
   let assert Definition(_, Function(fun_name, is_public, ..)) = fun_def
   case is_public {
@@ -23,7 +23,7 @@ pub fn is_pub_fun_used(files_ast, pub_fun_name, module_full_name) {
   let assert AnotherFilesAst(files_ast) = files_ast
   use file_ast <- list.find_map(files_ast)
   let assert FileAst(ast) = file_ast
-  let assert AST(imports, _, _, _, _, _, fns) = ast
+  let assert AST(imports, _, _, _, fns) = ast
   let imported_info_list =
     ast.imported_info(imports, module_full_name, pub_fun_name)
   use imported_info <- list.find_map(imported_info_list)

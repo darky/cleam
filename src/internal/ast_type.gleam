@@ -28,7 +28,7 @@ pub fn is_pub_type_used(files_ast, pub_type_name, module_full_name) {
   let assert AnotherFilesAst(files_ast) = files_ast
   use file_ast <- list.find_map(files_ast)
   let assert FileAst(ast) = file_ast
-  let assert AST(imports, _, _, _, _, _, fns) = ast
+  let assert AST(imports, _, _, _, fns) = ast
   let imported_info_list =
     ast.imported_info(imports, module_full_name, pub_type_name)
   use imported_info <- list.find_map(imported_info_list)
