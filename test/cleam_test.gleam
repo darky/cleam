@@ -329,6 +329,8 @@ pub fn public_types_test() {
     file_ast
     |> ast_type.public_type
     |> should.equal([
+      PublicType("UsedSubType"),
+      PublicType("SubTypeOrpan"),
       PublicType("PubOpaqueTypeOrphan"),
       PublicType("PubOpaqueTypeUsedInAliasedModule"),
       PublicType("PubOpaqueTypeUsedAsAlias"),
@@ -440,6 +442,7 @@ pub fn not_used_types_test() {
     }
   })
   |> should.equal([
+    #(PublicType("SubTypeOrpan"), FilePath("test/fixtures/dependency.gleam")),
     #(
       PublicType("PubOpaqueTypeOrphan"),
       FilePath("test/fixtures/dependency.gleam"),

@@ -2,6 +2,7 @@ import gleam/list
 import gleam/string
 import glance.{
   type Module as AST, CustomType, Definition, Function, Module as AST, Public,
+  Variant,
 }
 import internal/ast.{
   AnotherFilesAst, FileAst, ImportedAsAlias, ModuleImported, ModuleName,
@@ -12,9 +13,13 @@ pub fn public_type(file_ast) {
   let assert FileAst(ast) = file_ast
   let assert AST(_, types, ..) = ast
   use pub_type <- list.flat_map(types)
-  let assert Definition(_, CustomType(type_name, is_public, ..)) = pub_type
+  let assert Definition(_, CustomType(_, is_public, _, _, sub_types)) = pub_type
   case is_public {
-    Public -> [PublicType(type_name)]
+    Public -> {
+      use sub_type <- list.map(sub_types)
+      let assert Variant(type_name, _) = sub_type
+      PublicType(type_name)
+    }
     _ -> []
   }
 }

@@ -95,3 +95,8 @@ pub fn pub_opaque_type_used_in_aliased_module(n) {
 pub opaque type PubOpaqueTypeOrphan {
   PubOpaqueTypeOrphan(n: Int)
 }
+
+pub type UnionType {
+  UsedSubType
+  SubTypeOrpan
+}

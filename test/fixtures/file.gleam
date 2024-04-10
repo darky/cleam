@@ -7,6 +7,8 @@ import gleam/function
 import fixtures/dependency as dep
 
 pub fn main() {
+  dependency.UsedSubType
+
   let pub_opaq_type: dependency.PubOpaqueTypeUsed =
     dependency.pub_opaque_type(0)
   pub_opaq_type
