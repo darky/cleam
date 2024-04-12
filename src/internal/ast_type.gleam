@@ -1,13 +1,9 @@
 import gleam/list
 import gleam/string
 import glance.{
-  type Module as AST, CustomType, Definition, Function, Module as AST, Public,
-  Variant,
+  type Module as AST, CustomType, Definition, Module as AST, Public, Variant,
 }
-import internal/ast.{
-  AnotherFilesAst, FileAst, ImportedAsAlias, ModuleImported, ModuleName,
-  PublicType,
-}
+import internal/ast.{FileAst, ModuleName, PublicType}
 
 pub fn public_type(file_ast) {
   let assert FileAst(ast) = file_ast
@@ -25,21 +21,12 @@ pub fn public_type(file_ast) {
 }
 
 pub fn is_pub_type_used(files_ast, pub_type_name, module_full_name) {
-  let assert AnotherFilesAst(files_ast) = files_ast
-  use file_ast <- list.find_map(files_ast)
-  let assert FileAst(ast) = file_ast
-  let assert AST(imports, _, _, _, fns) = ast
-  let imported_info_list =
-    ast.imported_info(imports, module_full_name, pub_type_name)
-  use imported_info <- list.find_map(imported_info_list)
-  case imported_info {
-    ImportedAsAlias -> Ok(Nil)
-    ModuleImported(module_name) -> {
-      use fun_def <- list.find_map(fns)
-      let assert Definition(_, Function(_, _, _, _, statements, _)) = fun_def
-      check_type_usage(statements, pub_type_name, module_name)
-    }
-  }
+  ast.is_pub_member_used(
+    files_ast,
+    pub_type_name,
+    module_full_name,
+    check_type_usage,
+  )
 }
 
 fn check_type_usage(statements, pub_type_name, module_name) {
