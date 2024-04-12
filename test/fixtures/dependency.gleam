@@ -100,3 +100,15 @@ pub type UnionType {
   UsedSubType
   SubTypeOrpan
 }
+
+pub type UsedAliasType =
+  Int
+
+pub type AliasTypeOrphan =
+  Int
+
+pub type UsedAliasTypeAsAlias =
+  Int
+
+pub type UsedAliasTypeInAliasedModule =
+  Int

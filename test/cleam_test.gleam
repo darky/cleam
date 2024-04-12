@@ -339,6 +339,10 @@ pub fn public_types_test() {
       PublicType("PubTypeUsedInAliasedModule"),
       PublicType("PubTypeUsedAsAlias"),
       PublicType("PubTypeUsed"),
+      PublicType("UsedAliasTypeInAliasedModule"),
+      PublicType("UsedAliasTypeAsAlias"),
+      PublicType("AliasTypeOrphan"),
+      PublicType("UsedAliasType"),
     ])
   })
 }
@@ -431,6 +435,50 @@ pub fn public_opaque_not_used_test() {
   |> should.equal(Error(Nil))
 }
 
+pub fn public_aliased_type_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("UsedAliasType"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_aliased_type_used_as_alias_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("UsedAliasTypeAsAlias"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_aliased_type_in_aliased_module_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("UsedAliasTypeInAliasedModule"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_aliased_type_not_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("AliasTypeOrphan"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Error(Nil))
+}
+
 pub fn not_used_types_test() {
   ast.files_paths_with_ast(FilesDir("test"), None)
   |> checker.not_used_types(FilesDir("test"), _)
@@ -448,5 +496,6 @@ pub fn not_used_types_test() {
       FilePath("test/fixtures/dependency.gleam"),
     ),
     #(PublicType("PubTypeOrphan"), FilePath("test/fixtures/dependency.gleam")),
+    #(PublicType("AliasTypeOrphan"), FilePath("test/fixtures/dependency.gleam")),
   ])
 }

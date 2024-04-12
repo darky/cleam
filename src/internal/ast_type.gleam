@@ -1,23 +1,40 @@
 import gleam/list
 import gleam/string
 import glance.{
-  type Module as AST, CustomType, Definition, Module as AST, Public, Variant,
+  type Module as AST, CustomType, Definition, Module as AST, Public, TypeAlias,
+  Variant,
 }
 import internal/ast.{FileAst, ModuleName, PublicType}
 
 pub fn public_type(file_ast) {
   let assert FileAst(ast) = file_ast
-  let assert AST(_, types, ..) = ast
-  use pub_type <- list.flat_map(types)
-  let assert Definition(_, CustomType(_, is_public, _, _, sub_types)) = pub_type
-  case is_public {
-    Public -> {
-      use sub_type <- list.map(sub_types)
-      let assert Variant(type_name, _) = sub_type
-      PublicType(type_name)
+  let assert AST(_, types, type_aliases, ..) = ast
+  {
+    use pub_type <- list.flat_map(types)
+    let assert Definition(_, CustomType(pub_type, is_public, _, _, sub_types)) =
+      pub_type
+    case is_public {
+      Public -> {
+        case list.length(sub_types) > 0 {
+          True -> {
+            use sub_type <- list.map(sub_types)
+            let assert Variant(type_name, _) = sub_type
+            PublicType(type_name)
+          }
+          False -> [PublicType(pub_type)]
+        }
+      }
+      _ -> []
     }
-    _ -> []
   }
+  |> list.append({
+    use pub_type <- list.flat_map(type_aliases)
+    let assert Definition(_, TypeAlias(pub_type, is_public, ..)) = pub_type
+    case is_public {
+      Public -> [PublicType(pub_type)]
+      _ -> []
+    }
+  })
 }
 
 pub fn is_pub_type_used(files_ast, pub_type_name, module_full_name) {
