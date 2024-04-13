@@ -329,6 +329,7 @@ pub fn public_types_test() {
     file_ast
     |> ast_type.public_type
     |> should.equal([
+      PublicType("EmptyTypeOrphan"),
       PublicType("UsedSubType"),
       PublicType("SubTypeOrpan"),
       PublicType("PubOpaqueTypeOrphan"),
@@ -479,6 +480,17 @@ pub fn public_aliased_type_not_used_test() {
   |> should.equal(Error(Nil))
 }
 
+pub fn public_empty_type_not_used_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("EmptyTypeOrphan"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Error(Nil))
+}
+
 pub fn not_used_types_test() {
   ast.files_paths_with_ast(FilesDir("test"), None)
   |> checker.not_used_types(FilesDir("test"), _)
@@ -490,6 +502,7 @@ pub fn not_used_types_test() {
     }
   })
   |> should.equal([
+    #(PublicType("EmptyTypeOrphan"), FilePath("test/fixtures/dependency.gleam")),
     #(PublicType("SubTypeOrpan"), FilePath("test/fixtures/dependency.gleam")),
     #(
       PublicType("PubOpaqueTypeOrphan"),

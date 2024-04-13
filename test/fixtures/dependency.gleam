@@ -112,3 +112,5 @@ pub type UsedAliasTypeAsAlias =
 
 pub type UsedAliasTypeInAliasedModule =
   Int
+
+pub type EmptyTypeOrphan
