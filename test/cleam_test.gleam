@@ -1,17 +1,17 @@
+import glance.{Definition, Import, Module}
+import gleam/list
+import gleam/option.{None}
+import gleam/string
 import gleeunit
 import gleeunit/should
-import gleam/list
-import gleam/string
-import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
 import internal/ast.{
   AnotherFilesAst, FileAst, PublicConst, PublicFun, PublicType,
 }
-import internal/ast_fun
 import internal/ast_const
+import internal/ast_fun
 import internal/ast_type
 import internal/checker
-import glance.{Definition, Import, Module}
-import gleam/option.{None}
+import internal/fs.{FileContent, FilePath, FilesDir, ModuleFullName}
 
 pub fn main() {
   gleeunit.main()

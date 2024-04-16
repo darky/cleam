@@ -2,9 +2,9 @@ import fixtures/dependency.{
   type PubOpaqueTypeUsedAsAlias, type UsedAliasTypeAsAlias, PubTypeUsedAsAlias,
   const_used_as_alias, dep_fun_imported_as_alias,
 }
-import gleam/list
-import gleam/function
 import fixtures/dependency as dep
+import gleam/function
+import gleam/list
 
 pub fn main() {
   let pub_alias_type: dependency.UsedAliasType = 123

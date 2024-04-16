@@ -1,6 +1,6 @@
+import glance.{type Module as AST, Constant, Definition, Module as AST, Public}
 import gleam/list
 import gleam/string
-import glance.{type Module as AST, Constant, Definition, Module as AST, Public}
 import internal/ast.{FileAst, ModuleName, PublicConst}
 
 pub fn public_const(file_ast) {

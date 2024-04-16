@@ -1,9 +1,9 @@
+import gleam/io
+import gleam/list
+import gleam/option.{Some}
+import internal/ast.{PublicConst, PublicFun, PublicType}
 import internal/checker
 import internal/fs.{FilePath, FilesDir}
-import internal/ast.{PublicConst, PublicFun, PublicType}
-import gleam/list
-import gleam/io
-import gleam/option.{Some}
 
 pub fn main() {
   let ast_info =

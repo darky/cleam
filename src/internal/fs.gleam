@@ -1,8 +1,8 @@
 import fswalk.{Entry, Stat}
 import gleam/iterator
+import gleam/list
 import gleam/string
 import simplifile
-import gleam/list
 
 pub type FilePath {
   FilePath(String)

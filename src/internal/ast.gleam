@@ -1,11 +1,11 @@
-import gleam/list
-import internal/fs.{FileContent, FilesDir, ModuleFullName}
 import glance.{
   type Module as AST, Definition, Function, Import, Module as AST,
   UnqualifiedImport,
 }
+import gleam/list
 import gleam/option.{None, Some}
 import gleam/string
+import internal/fs.{FileContent, FilesDir, ModuleFullName}
 
 pub type FileAst {
   FileAst(AST)

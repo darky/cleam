@@ -1,9 +1,9 @@
-import gleam/list
-import gleam/string
 import glance.{
   type Module as AST, CustomType, Definition, Module as AST, Public, TypeAlias,
   Variant,
 }
+import gleam/list
+import gleam/string
 import internal/ast.{FileAst, ModuleName, PublicType}
 
 pub fn public_type(file_ast) {

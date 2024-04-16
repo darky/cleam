@@ -1,6 +1,6 @@
 import gleam/list
-import internal/ast_fun
 import internal/ast_const
+import internal/ast_fun
 import internal/ast_type
 import internal/fs
 

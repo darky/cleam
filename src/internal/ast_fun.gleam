@@ -1,6 +1,6 @@
-import gleam/string
-import gleam/list
 import glance.{type Module as AST, Definition, Function, Module as AST, Public}
+import gleam/list
+import gleam/string
 import internal/ast.{FileAst, ModuleName, PublicFun}
 
 const main_fun_name = "main"
