@@ -219,7 +219,7 @@ pub fn files_paths_with_ast_test() {
   |> should.equal(FilePath("test/fixtures/file.gleam"))
   case resp0.2 {
     AnotherFilesAst([
-      FileAst(Module([Definition(_, Import("fixtures/dependency", ..)), ..], ..)),
+      FileAst(Module([Definition(_, Import("gleam/list", ..)), ..], ..)),
     ]) -> True
     _ -> False
   }
