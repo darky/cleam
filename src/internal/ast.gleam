@@ -1,6 +1,6 @@
 import glance.{
-  type Module as AST, Definition, Function, Import, Module as AST,
-  UnqualifiedImport,
+  type Module as AST, Definition, Discarded, Function, Import, Module as AST,
+  Named, UnqualifiedImport,
 }
 import gleam/list
 import gleam/option.{None, Some}
@@ -91,12 +91,16 @@ fn imported_info(imports, module_full_name, exported) {
         {
           True -> Ok(ImportedAsAlias)
           False ->
-            Ok(
-              ModuleImported(case module_alias {
-                Some(alias) -> ModuleName(alias)
-                None -> module_full_name_to_module_name(module_full_name)
-              }),
-            )
+            case module_alias {
+              Some(Named(alias)) -> Ok(ModuleImported(ModuleName(alias)))
+              Some(Discarded(_)) -> Error(Nil)
+              None ->
+                Ok(
+                  ModuleImported(module_full_name_to_module_name(
+                    module_full_name,
+                  )),
+                )
+            }
         }
       _ -> Error(Nil)
     }
