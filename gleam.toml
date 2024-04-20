@@ -1,5 +1,5 @@
 name = "cleam"
-version = "1.3.0"
+version = "1.3.1"
 description = "Cleam for clean Gleam. Detect unused exports."
 licences = ["MIT"]
 repository = { type = "github", user = "darky", repo = "cleam" }
