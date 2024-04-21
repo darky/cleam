@@ -70,6 +70,14 @@ fn check_type_usage(statements, pub_type_name, module_name) {
       <> module_name
       <> "\")",
     )
+    || serialized_statement
+    |> string.contains(
+      "PatternConstructor(Some(\""
+      <> module_name
+      <> "\"), \""
+      <> pub_type_name
+      <> "\"",
+    )
   {
     True -> Ok(Nil)
     False -> Error(Nil)

@@ -7,6 +7,14 @@ import gleam/function
 import gleam/list
 
 pub fn main() {
+  case dep.put_type_used_in_pattern_matching_aliased_module() {
+    dep.PubTypeUsedInPatternMatchingInAliasedModule -> ""
+  }
+
+  case dependency.put_type_used_in_pattern_matching() {
+    dependency.PubTypeUsedInPatternMatching -> ""
+  }
+
   let pub_alias_type: dependency.UsedAliasType = 123
   pub_alias_type
 

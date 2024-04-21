@@ -62,6 +62,8 @@ pub fn public_functions_test() {
     file_ast
     |> ast_fun.public_funs
     |> should.equal([
+      PublicFun("put_type_used_in_pattern_matching_aliased_module"),
+      PublicFun("put_type_used_in_pattern_matching"),
       PublicFun("pub_opaque_type_used_in_aliased_module"),
       PublicFun("pub_opaque_type_used_as_alias"),
       PublicFun("pub_opaque_type"),
@@ -329,6 +331,8 @@ pub fn public_types_test() {
     file_ast
     |> ast_type.public_type
     |> should.equal([
+      PublicType("PubTypeUsedInPatternMatchingInAliasedModule"),
+      PublicType("PubTypeUsedInPatternMatching"),
       PublicType("EmptyTypeOrphan"),
       PublicType("UsedSubType"),
       PublicType("SubTypeOrpan"),
@@ -489,6 +493,28 @@ pub fn public_empty_type_not_used_test() {
     ModuleFullName("fixtures/dependency"),
   )
   |> should.equal(Error(Nil))
+}
+
+pub fn public_type_used_in_pattern_matching_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubTypeUsedInPatternMatching"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
+}
+
+pub fn public_type_used_in_pattern_matching_in_aliased_module_test() {
+  fs.files_contents([FilePath("test/fixtures/file.gleam")])
+  |> ast.files_ast
+  |> AnotherFilesAst
+  |> ast_type.is_pub_type_used(
+    PublicType("PubTypeUsedInPatternMatchingInAliasedModule"),
+    ModuleFullName("fixtures/dependency"),
+  )
+  |> should.equal(Ok(Nil))
 }
 
 pub fn not_used_types_test() {

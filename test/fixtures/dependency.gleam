@@ -114,3 +114,19 @@ pub type UsedAliasTypeInAliasedModule =
   Int
 
 pub type EmptyTypeOrphan
+
+pub type PubTypeUsedInPatternMatching {
+  PubTypeUsedInPatternMatching
+}
+
+pub fn put_type_used_in_pattern_matching() {
+  PubTypeUsedInPatternMatching
+}
+
+pub type PubTypeUsedInPatternMatchingInAliasedModule {
+  PubTypeUsedInPatternMatchingInAliasedModule
+}
+
+pub fn put_type_used_in_pattern_matching_aliased_module() {
+  PubTypeUsedInPatternMatchingInAliasedModule
+}
