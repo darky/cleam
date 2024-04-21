@@ -1,40 +1,55 @@
 import glance.{
-  type Module as AST, CustomType, Definition, Module as AST, Public, TypeAlias,
-  Variant,
+  type Module as AST, CustomType, Definition, Function, Module as AST, NamedType,
+  Public, TypeAlias, Variant,
 }
 import gleam/list
+import gleam/option.{Some}
 import gleam/string
 import internal/ast.{FileAst, ModuleName, PublicType}
 
 pub fn public_type(file_ast) {
   let assert FileAst(ast) = file_ast
-  let assert AST(_, types, type_aliases, ..) = ast
+  let assert AST(_, types, type_aliases, _, fns) = ast
   {
     use pub_type <- list.flat_map(types)
     let assert Definition(_, CustomType(pub_type, is_public, _, _, sub_types)) =
       pub_type
     case is_public {
       Public -> {
-        case list.length(sub_types) > 0 {
-          True -> {
-            use sub_type <- list.map(sub_types)
-            let assert Variant(type_name, _) = sub_type
-            PublicType(type_name)
-          }
-          False -> [PublicType(pub_type)]
-        }
+        use sub_type <- list.filter_map(case list.length(sub_types) > 0 {
+          True -> sub_types
+          False -> [Variant(pub_type, [])]
+        })
+        let assert Variant(type_name, _) = sub_type
+        pub_type_if_not_returned_in_pub_fun(type_name, fns)
       }
       _ -> []
     }
   }
   |> list.append({
-    use pub_type <- list.flat_map(type_aliases)
+    use pub_type <- list.filter_map(type_aliases)
     let assert Definition(_, TypeAlias(pub_type, is_public, ..)) = pub_type
     case is_public {
-      Public -> [PublicType(pub_type)]
-      _ -> []
+      Public -> Ok(PublicType(pub_type))
+      _ -> Error(Nil)
     }
   })
+}
+
+fn pub_type_if_not_returned_in_pub_fun(type_name, fns) {
+  let pub_fun_usage = {
+    use fun <- list.find_map(fns)
+    case fun {
+      Definition(_, Function(_, public, _, Some(NamedType(t_name, ..)), ..))
+        if public == Public && t_name == type_name
+      -> Ok(Nil)
+      _ -> Error(Nil)
+    }
+  }
+  case pub_fun_usage {
+    Ok(Nil) -> Error(Nil)
+    Error(Nil) -> Ok(PublicType(type_name))
+  }
 }
 
 pub fn is_pub_type_used(files_ast, pub_type_name, module_full_name) {

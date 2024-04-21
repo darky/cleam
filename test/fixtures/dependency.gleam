@@ -130,3 +130,16 @@ pub type PubTypeUsedInPatternMatchingInAliasedModule {
 pub fn put_type_used_in_pattern_matching_aliased_module() {
   PubTypeUsedInPatternMatchingInAliasedModule
 }
+
+pub type TypeWhichReturnedInPublicFunctionNeedIgnore {
+  TypeWhichReturnedInPublicFunctionNeedIgnore
+  TypeWhichNotReturnedInPublicFunctionNeedConsider
+}
+
+pub fn return_public_type() -> TypeWhichReturnedInPublicFunctionNeedIgnore {
+  return_public_type_do()
+}
+
+fn return_public_type_do() {
+  TypeWhichReturnedInPublicFunctionNeedIgnore
+}

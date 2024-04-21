@@ -62,6 +62,7 @@ pub fn public_functions_test() {
     file_ast
     |> ast_fun.public_funs
     |> should.equal([
+      PublicFun("return_public_type"),
       PublicFun("put_type_used_in_pattern_matching_aliased_module"),
       PublicFun("put_type_used_in_pattern_matching"),
       PublicFun("pub_opaque_type_used_in_aliased_module"),
@@ -246,6 +247,10 @@ pub fn not_used_functions_test() {
     }
   })
   |> should.equal([
+    #(
+      PublicFun("return_public_type"),
+      FilePath("test/fixtures/dependency.gleam"),
+    ),
     #(PublicFun("fun_orphan"), FilePath("test/fixtures/dependency.gleam")),
   ])
 }
@@ -331,6 +336,7 @@ pub fn public_types_test() {
     file_ast
     |> ast_type.public_type
     |> should.equal([
+      PublicType("TypeWhichNotReturnedInPublicFunctionNeedConsider"),
       PublicType("PubTypeUsedInPatternMatchingInAliasedModule"),
       PublicType("PubTypeUsedInPatternMatching"),
       PublicType("EmptyTypeOrphan"),
@@ -528,6 +534,10 @@ pub fn not_used_types_test() {
     }
   })
   |> should.equal([
+    #(
+      PublicType("TypeWhichNotReturnedInPublicFunctionNeedConsider"),
+      FilePath("test/fixtures/dependency.gleam"),
+    ),
     #(PublicType("EmptyTypeOrphan"), FilePath("test/fixtures/dependency.gleam")),
     #(PublicType("SubTypeOrpan"), FilePath("test/fixtures/dependency.gleam")),
     #(
