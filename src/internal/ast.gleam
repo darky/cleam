@@ -2,7 +2,6 @@ import glance.{
   type Module as AST, Definition, Discarded, Function, Import, Module as AST,
   Named, UnqualifiedImport,
 }
-import gleam/dict
 import gleam/list
 import gleam/option.{None, Some}
 import gleam/string
@@ -40,10 +39,6 @@ pub fn files_ast(files_contents) {
 
 pub fn files_paths_with_ast(dir, test_dir) {
   let file_paths = fs.files_paths(dir)
-  let file_paths_idx =
-    file_paths
-    |> list.index_map(fn(fp, i) { #(i, fp) })
-    |> dict.from_list
   let flle_contents = fs.files_contents(file_paths)
   let test_file_contents = case test_dir {
     Some(FilesDir(_) as test_dir) -> {
@@ -52,34 +47,21 @@ pub fn files_paths_with_ast(dir, test_dir) {
     }
     None -> []
   }
+
   let ast_list =
     flle_contents
     |> list.append(test_file_contents)
     |> files_ast
-  let ast_list_idx =
-    ast_list
-    |> list.index_map(fn(ast, i) { #(i, ast) })
-    |> dict.from_list
-  let indexes = list.range(0, list.length(ast_list) - 1)
-  use index <- list.filter_map(indexes)
-  case dict.get(file_paths_idx, index) {
-    Ok(file_path) -> {
-      let assert Ok(file_ast) = dict.get(ast_list_idx, index)
-      Ok(#(
-        file_path,
-        file_ast,
-        AnotherFilesAst(
-          list.filter_map(indexes, fn(idx) {
-            case idx == index {
-              True -> Error(Nil)
-              False -> dict.get(ast_list_idx, idx)
-            }
-          }),
-        ),
-      ))
-    }
-    Error(Nil) -> Error(Nil)
-  }
+
+  use #(file_path, file_ast) <- list.map(
+    file_paths
+    |> list.zip(ast_list),
+  )
+  #(
+    file_path,
+    file_ast,
+    AnotherFilesAst(list.filter(ast_list, fn(ast) { file_ast != ast })),
+  )
 }
 
 fn imported_info(imports, module_full_name, exported) {
