@@ -214,8 +214,8 @@ pub fn files_paths_with_ast_test() {
       let assert FilePath(fp2) = fp2
       string.compare(fp1, fp2)
     })
-  let assert Ok(resp0) = list.at(resp, 0)
-  let assert Ok(resp1) = list.at(resp, 1)
+  let assert Ok(resp0) = list.first(resp)
+  let assert Ok(resp1) = list.last(resp)
   resp0.0
   |> should.equal(FilePath("test/fixtures/dependency.gleam"))
   resp1.0
