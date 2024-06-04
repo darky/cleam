@@ -2,6 +2,7 @@ import glance.{
   type Module as AST, Definition, Discarded, Function, Import, Module as AST,
   Named, UnqualifiedImport,
 }
+import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/option.{None, Some}
 import gleam/string
@@ -12,7 +13,7 @@ pub type FileAst {
 }
 
 pub type AnotherFilesAst {
-  AnotherFilesAst(List(FileAst))
+  AnotherFilesAst(Iterator(FileAst))
 }
 
 pub type ModuleName {
@@ -60,7 +61,11 @@ pub fn files_paths_with_ast(dir, test_dir) {
   #(
     file_path,
     file_ast,
-    AnotherFilesAst(list.filter(ast_list, fn(ast) { file_ast != ast })),
+    AnotherFilesAst(
+      ast_list
+      |> iterator.from_list
+      |> iterator.filter(fn(ast) { file_ast != ast }),
+    ),
   )
 }
 
@@ -105,7 +110,7 @@ pub fn is_pub_member_used(
   check_usage,
 ) {
   let AnotherFilesAst(files_ast) = files_ast
-  use file_ast <- list.find_map(files_ast)
+  use file_ast <- iterator.find_map(files_ast)
   let FileAst(ast) = file_ast
   let AST(imports, _, _, _, fns) = ast
   let imported_info_list =

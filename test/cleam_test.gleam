@@ -1,4 +1,5 @@
 import glance.{Definition, Import, Module}
+import gleam/iterator
 import gleam/list
 import gleam/option.{None}
 import gleam/string
@@ -86,6 +87,7 @@ pub fn public_functions_test() {
 pub fn public_function_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun"),
@@ -97,6 +99,7 @@ pub fn public_function_used_test() {
 pub fn public_function_not_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("fun_orphan"),
@@ -108,6 +111,7 @@ pub fn public_function_not_used_test() {
 pub fn public_function_used_inside_block_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_block"),
@@ -119,6 +123,7 @@ pub fn public_function_used_inside_block_test() {
 pub fn public_function_used_inside_nested_block_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_nested_inside_block"),
@@ -130,6 +135,7 @@ pub fn public_function_used_inside_nested_block_test() {
 pub fn public_function_used_inside_use_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_use"),
@@ -141,6 +147,7 @@ pub fn public_function_used_inside_use_test() {
 pub fn public_function_used_inside_clojure_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_inside_clojure"),
@@ -152,6 +159,7 @@ pub fn public_function_used_inside_clojure_test() {
 pub fn public_function_imported_as_alias_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_imported_as_alias"),
@@ -163,6 +171,7 @@ pub fn public_function_imported_as_alias_test() {
 pub fn public_function_used_in_aliased_module_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_module_as_alias"),
@@ -174,6 +183,7 @@ pub fn public_function_used_in_aliased_module_test() {
 pub fn public_function_used_as_assigned_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_assigned"),
@@ -185,6 +195,7 @@ pub fn public_function_used_as_assigned_test() {
 pub fn public_function_called_as_argument_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_called_as_argument"),
@@ -196,6 +207,7 @@ pub fn public_function_called_as_argument_test() {
 pub fn public_function_called_as_pipe_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_fun.is_pub_fun_used(
     PublicFun("dep_fun_called_in_pipe"),
@@ -221,17 +233,25 @@ pub fn files_paths_with_ast_test() {
   resp1.0
   |> should.equal(FilePath("test/fixtures/file.gleam"))
   case resp0.2 {
-    AnotherFilesAst([
-      FileAst(Module([Definition(_, Import("gleam/list", ..)), ..], ..)),
-    ]) -> True
-    _ -> False
+    AnotherFilesAst(it) -> {
+      let lst = iterator.to_list(it)
+      case lst {
+        [FileAst(Module([Definition(_, Import("gleam/list", ..)), ..], ..))] ->
+          True
+        _ -> False
+      }
+    }
   }
   |> should.equal(True)
   case resp1.2 {
-    AnotherFilesAst([
-      FileAst(Module([Definition(_, Import("gleam/int", ..)), ..], ..)),
-    ]) -> True
-    _ -> False
+    AnotherFilesAst(it) -> {
+      let lst = iterator.to_list(it)
+      case lst {
+        [FileAst(Module([Definition(_, Import("gleam/int", ..)), ..], ..))] ->
+          True
+        _ -> False
+      }
+    }
   }
   |> should.equal(True)
 }
@@ -288,6 +308,7 @@ pub fn public_const_test() {
 pub fn public_const_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_const.is_pub_const_used(
     PublicConst("const_used"),
@@ -299,6 +320,7 @@ pub fn public_const_used_test() {
 pub fn public_const_used_as_alias_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_const.is_pub_const_used(
     PublicConst("const_used_as_alias"),
@@ -310,6 +332,7 @@ pub fn public_const_used_as_alias_test() {
 pub fn public_const_used_in_aliased_module_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_const.is_pub_const_used(
     PublicConst("const_used_in_aliased_module"),
@@ -321,6 +344,7 @@ pub fn public_const_used_in_aliased_module_test() {
 pub fn public_const_not_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_const.is_pub_const_used(
     PublicConst("const_orphan"),
@@ -361,6 +385,7 @@ pub fn public_types_test() {
 pub fn public_type_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubTypeUsed"),
@@ -372,6 +397,7 @@ pub fn public_type_used_test() {
 pub fn public_type_used_as_alias_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubTypeUsedAsAlias"),
@@ -383,6 +409,7 @@ pub fn public_type_used_as_alias_test() {
 pub fn public_type_used_in_aliased_module_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubTypeUsedInAliasedModule"),
@@ -394,6 +421,7 @@ pub fn public_type_used_in_aliased_module_test() {
 pub fn public_type_not_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubTypeOrphan"),
@@ -405,6 +433,7 @@ pub fn public_type_not_used_test() {
 pub fn public_opaque_type_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubOpaqueTypeUsed"),
@@ -416,6 +445,7 @@ pub fn public_opaque_type_used_test() {
 pub fn public_opaque_type_used_as_alias_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubOpaqueTypeUsedAsAlias"),
@@ -427,6 +457,7 @@ pub fn public_opaque_type_used_as_alias_test() {
 pub fn public_opaque_type_used_in_aliased_module_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubOpaqueTypeUsedInAliasedModule"),
@@ -438,6 +469,7 @@ pub fn public_opaque_type_used_in_aliased_module_test() {
 pub fn public_opaque_not_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubOpaqueTypeOrphan"),
@@ -449,6 +481,7 @@ pub fn public_opaque_not_used_test() {
 pub fn public_aliased_type_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("UsedAliasType"),
@@ -460,6 +493,7 @@ pub fn public_aliased_type_used_test() {
 pub fn public_aliased_type_used_as_alias_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("UsedAliasTypeAsAlias"),
@@ -471,6 +505,7 @@ pub fn public_aliased_type_used_as_alias_test() {
 pub fn public_aliased_type_in_aliased_module_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("UsedAliasTypeInAliasedModule"),
@@ -482,6 +517,7 @@ pub fn public_aliased_type_in_aliased_module_test() {
 pub fn public_aliased_type_not_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("AliasTypeOrphan"),
@@ -493,6 +529,7 @@ pub fn public_aliased_type_not_used_test() {
 pub fn public_empty_type_not_used_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("EmptyTypeOrphan"),
@@ -504,6 +541,7 @@ pub fn public_empty_type_not_used_test() {
 pub fn public_type_used_in_pattern_matching_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubTypeUsedInPatternMatching"),
@@ -515,6 +553,7 @@ pub fn public_type_used_in_pattern_matching_test() {
 pub fn public_type_used_in_pattern_matching_in_aliased_module_test() {
   fs.files_contents([FilePath("test/fixtures/file.gleam")])
   |> ast.files_ast
+  |> iterator.from_list
   |> AnotherFilesAst
   |> ast_type.is_pub_type_used(
     PublicType("PubTypeUsedInPatternMatchingInAliasedModule"),
