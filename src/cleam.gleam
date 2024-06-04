@@ -30,7 +30,7 @@ pub fn main() {
 
 fn print_not_used(not_used) {
   use not_used <- list.each(not_used)
-  let assert #(pub_member, FilePath(file_path)) = not_used
+  let #(pub_member, FilePath(file_path)) = not_used
   let #(prefix, name) = case pub_member {
     PublicFun(name) -> #("Function", name)
     PublicConst(name) -> #("Const", name)

@@ -8,11 +8,11 @@ import gleam/string
 import internal/ast.{FileAst, ModuleName, PublicType}
 
 pub fn public_type(file_ast) {
-  let assert FileAst(ast) = file_ast
-  let assert AST(_, types, type_aliases, _, fns) = ast
+  let FileAst(ast) = file_ast
+  let AST(_, types, type_aliases, _, fns) = ast
   {
     use pub_type <- list.flat_map(types)
-    let assert Definition(_, CustomType(pub_type, is_public, _, _, sub_types)) =
+    let Definition(_, CustomType(pub_type, is_public, _, _, sub_types)) =
       pub_type
     case is_public {
       Public -> {
@@ -20,7 +20,7 @@ pub fn public_type(file_ast) {
           True -> sub_types
           False -> [Variant(pub_type, [])]
         })
-        let assert Variant(type_name, _) = sub_type
+        let Variant(type_name, _) = sub_type
         pub_type_if_not_returned_in_pub_fun(type_name, fns)
       }
       _ -> []
@@ -28,7 +28,7 @@ pub fn public_type(file_ast) {
   }
   |> list.append({
     use pub_type <- list.filter_map(type_aliases)
-    let assert Definition(_, TypeAlias(pub_type, is_public, ..)) = pub_type
+    let Definition(_, TypeAlias(pub_type, is_public, ..)) = pub_type
     case is_public {
       Public -> Ok(PublicType(pub_type))
       _ -> Error(Nil)
@@ -63,7 +63,7 @@ pub fn is_pub_type_used(files_ast, pub_type_name, module_full_name) {
 
 fn check_type_usage(statements, pub_type_name, module_name) {
   let assert PublicType(pub_type_name) = pub_type_name
-  let assert ModuleName(module_name) = module_name
+  let ModuleName(module_name) = module_name
   use statement <- list.find_map(statements)
   let serialized_statement =
     statement

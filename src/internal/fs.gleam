@@ -21,7 +21,7 @@ pub type ModuleFullName {
 }
 
 pub fn files_paths(dir) {
-  let assert FilesDir(dir) = dir
+  let FilesDir(dir) = dir
   fswalk.builder()
   |> fswalk.with_path(dir)
   |> fswalk.walk()
@@ -41,14 +41,14 @@ pub fn files_paths(dir) {
 
 pub fn files_contents(files_paths) {
   use path <- list.map(files_paths)
-  let assert FilePath(path) = path
+  let FilePath(path) = path
   let assert Ok(content) = simplifile.read(path)
   FileContent(content)
 }
 
 pub fn file_path_to_module_full_name(files_dir, file_path) {
-  let assert FilesDir(files_dir) = files_dir
-  let assert FilePath(file_path) = file_path
+  let FilesDir(files_dir) = files_dir
+  let FilePath(file_path) = file_path
   file_path
   |> string.replace(files_dir <> "/", "")
   |> string.replace(".gleam", "")

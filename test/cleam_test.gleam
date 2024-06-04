@@ -20,8 +20,8 @@ pub fn main() {
 pub fn files_list_test() {
   fs.files_paths(FilesDir("test/fixtures"))
   |> list.sort(fn(fp1, fp2) {
-    let assert FilePath(fp1) = fp1
-    let assert FilePath(fp2) = fp2
+    let FilePath(fp1) = fp1
+    let FilePath(fp2) = fp2
     string.compare(fp1, fp2)
   })
   |> should.equal([
@@ -36,12 +36,12 @@ pub fn files_content_test() {
     FilePath("test/fixtures/file.gleam"),
   ])
   |> list.sort(fn(c1, c2) {
-    let assert FileContent(c1) = c1
-    let assert FileContent(c2) = c2
+    let FileContent(c1) = c1
+    let FileContent(c2) = c2
     string.compare(c1, c2)
   })
   |> list.map(fn(content) {
-    let assert FileContent(content) = content
+    let FileContent(content) = content
     string.starts_with(content, "import")
   })
   |> should.equal([True, True])
@@ -210,8 +210,8 @@ pub fn files_paths_with_ast_test() {
     |> list.sort(fn(c1, c2) {
       let #(fp1, _, _) = c1
       let #(fp2, _, _) = c2
-      let assert FilePath(fp1) = fp1
-      let assert FilePath(fp2) = fp2
+      let FilePath(fp1) = fp1
+      let FilePath(fp2) = fp2
       string.compare(fp1, fp2)
     })
   let assert Ok(resp0) = list.first(resp)

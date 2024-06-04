@@ -32,7 +32,7 @@ pub type PublicMember {
 
 pub fn files_ast(files_contents) {
   use content <- list.map(files_contents)
-  let assert FileContent(content) = content
+  let FileContent(content) = content
   let assert Ok(ast) = glance.module(content)
   FileAst(ast)
 }
@@ -74,7 +74,7 @@ fn imported_info(imports, module_full_name, exported) {
           aliases
           |> list.append(type_aliases)
           |> list.any(fn(alias) {
-            let assert UnqualifiedImport(imported, _) = alias
+            let UnqualifiedImport(imported, _) = alias
             PublicFun(imported) == exported
             || PublicConst(imported) == exported
             || PublicType(imported) == exported
@@ -104,10 +104,10 @@ pub fn is_pub_member_used(
   module_full_name,
   check_usage,
 ) {
-  let assert AnotherFilesAst(files_ast) = files_ast
+  let AnotherFilesAst(files_ast) = files_ast
   use file_ast <- list.find_map(files_ast)
-  let assert FileAst(ast) = file_ast
-  let assert AST(imports, _, _, _, fns) = ast
+  let FileAst(ast) = file_ast
+  let AST(imports, _, _, _, fns) = ast
   let imported_info_list =
     imported_info(imports, module_full_name, pub_member_name)
   use imported_info <- list.find_map(imported_info_list)
@@ -115,14 +115,14 @@ pub fn is_pub_member_used(
     ImportedAsAlias -> Ok(Nil)
     ModuleImported(module_name) -> {
       use fun_def <- list.find_map(fns)
-      let assert Definition(_, Function(_, _, _, _, statements, _)) = fun_def
+      let Definition(_, Function(_, _, _, _, statements, _)) = fun_def
       check_usage(statements, pub_member_name, module_name)
     }
   }
 }
 
 fn module_full_name_to_module_name(module_full_name) {
-  let assert ModuleFullName(module_full_name) = module_full_name
+  let ModuleFullName(module_full_name) = module_full_name
   let assert Ok(module_name) =
     string.split(module_full_name, "/")
     |> list.last
