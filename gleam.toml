@@ -1,9 +1,9 @@
 name = "cleam"
-version = "1.5.1"
+version = "2.0.0"
 description = "Cleam for clean Gleam. Detect unused exports."
 licences = ["MIT"]
 repository = { type = "github", user = "darky", repo = "cleam" }
-gleam = ">= 1.1.0"
+gleam = ">= 1.4.0"
 
 [dependencies]
 gleam_stdlib = "~> 0.37"
