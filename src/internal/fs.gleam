@@ -1,7 +1,7 @@
 import fswalk.{Entry, Stat}
-import gleam/iterator
 import gleam/list
 import gleam/string
+import gleam/yielder
 import simplifile
 
 pub type FilePath {
@@ -25,18 +25,18 @@ pub fn files_paths(dir) {
   fswalk.builder()
   |> fswalk.with_path(dir)
   |> fswalk.walk()
-  |> iterator.filter(fn(entry_result) {
+  |> yielder.filter(fn(entry_result) {
     case entry_result {
       Ok(Entry(path, Stat(is_dir))) ->
         is_dir == False && string.ends_with(path, ".gleam")
       _ -> False
     }
   })
-  |> iterator.map(fn(entry_result) {
+  |> yielder.map(fn(entry_result) {
     let assert Ok(Entry(path, _)) = entry_result
     FilePath(path)
   })
-  |> iterator.to_list()
+  |> yielder.to_list()
 }
 
 pub fn files_contents(files_paths) {
